@@ -1,0 +1,22 @@
+{
+  "creativetab.simcitymod_tab": "SimCity Mod",
+  "item.simcitymod.chunk_claimer": "Chunk Claimer",
+  "item.simcitymod.chunk_unclaimer": "Chunk UnClaimer",
+  
+  
+  "message.simcitymod.chunk_protected": "§cThis area is protected!",
+  "message.simcitymod.chunk_claimed_success": "§aSuccessfully claimed! (%s/%s)",
+  "message.simcitymod.chunk_already_owned": "§cYou already own this chunk.",
+  "message.simcitymod.chunk_already_claimed": "§cThis chunk is already claimed by %s",
+  "message.simcitymod.claim_limit_exceeded": "§cClaim limit reached! (Max: %s)",
+  "message.simcitymod.chunk_not_residential": "§cThis chunk is not residential and cannot be claimed.",
+  
+  "message.simcitymod.chunk_not_claimed": "§cThis chunk is not claimed.",
+  "message.simcitymod.not_your_chunk": "§cYou do not own this chunk!",
+  "message.simcitymod.chunk_unclaimed": "§eChunk unclaimed! Remaining: (%s/%s)",
+  
+  "message.simcitymod.info_wild": "§fThis area is in the wild.",
+  "message.simcitymod.info_owner": "§bThis chunk is %s.",
+
+  "entity.simcitymod.trader": "Trader"
+}

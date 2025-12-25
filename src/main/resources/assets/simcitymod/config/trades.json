@@ -1,0 +1,14 @@
+[
+  {
+    "inputItem": "minecraft:iron_ingot",
+    "inputCount": 64,
+    "outputItem": "simcitymod:chunk_claimer",
+    "outputCount": 1
+  },
+  {
+    "inputItem": "minecraft:iron_ingot",
+    "inputCount": 16,
+    "outputItem": "simcitymod:chunk_unclaimer",
+    "outputCount": 1
+  }
+]

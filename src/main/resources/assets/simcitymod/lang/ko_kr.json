@@ -1,0 +1,21 @@
+{
+  "creativetab.simcitymod_tab": "심시티 모드",
+  "item.simcitymod.chunk_claimer": "청크 점유권",
+  "item.simcitymod.chunk_unclaimer": "청크 점유 해제권",
+
+  "message.simcitymod.chunk_claimed_success": "§a청크가 성공적으로 점유되었습니다! (%s/%s)",
+  "message.simcitymod.chunk_already_owned": "§c당신은 이미 이 청크를 소유하고 있습니다.",
+  "message.simcitymod.chunk_already_claimed": "§c이 청크는 이미 %s님이 점유하고 있습니다.",
+  "message.simcitymod.chunk_protected": "§c이 지역은 보호되고 있습니다!",
+  "message.simcitymod.claim_limit_exceeded": "§c점유 한도에 도달했습니다! (최대: %s개)",
+  "message.simcitymod.chunk_not_residential": "§c이 청크는 주거지역이 아니므로 점유할 수 없습니다.",
+
+  "message.simcitymod.chunk_not_claimed": "§c이 청크는 점유되지 않은 상태입니다.",
+  "message.simcitymod.not_your_chunk": "§c당신의 청크가 아닙니다!",
+  "message.simcitymod.chunk_unclaimed": "§e청크 점유 해제! 점유 개수(%s/%s)",
+
+  "message.simcitymod.info_wild": "§f이곳은 야생 지역입니다.",
+  "message.simcitymod.info_owner": "§b이 청크는 %s의 소유입니다.",
+
+  "entity.simcitymod.trader": "상인"
+}
