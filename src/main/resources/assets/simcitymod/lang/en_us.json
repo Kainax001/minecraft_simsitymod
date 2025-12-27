@@ -25,5 +25,8 @@
   "message.simcitymod.teleport_wild_success": "§aTeleported to the Wild world!",
   "message.simcitymod.home_dimension_error": "§c[SimCity] Could not find the saved Home dimension.",
   "message.simcitymod.home_not_set_default": "§e[SimCity] No return point set. Teleporting to the initial spawn position.",
-  "message.simcitymod.teleport_home_success": "§6Teleported to the Home zone."
+  "message.simcitymod.teleport_home_success": "§6Teleported to the Home zone.",
+  "message.simcitymod.setspawn_wild_success": "§aCurrent location set as the Wild spawn point.",
+  "message.simcitymod.setspawn_home_success": "§aCurrent location set as the Home spawn point.",
+  "message.simcitymod.setspawn_invalid": "§cInvalid spawn type. Use 'wild' or 'home'."
 }

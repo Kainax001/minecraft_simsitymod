@@ -24,5 +24,8 @@
   "message.simcitymod.teleport_wild_success": "§a야생 월드로 이동했습니다!",
   "message.simcitymod.home_dimension_error": "§c[SimCity] 저장된 홈 차원을 찾을 수 없습니다.",
   "message.simcitymod.home_not_set_default": "§e[SimCity] 설정된 귀환 지점이 없어 초기 위치로 이동합니다.",
-  "message.simcitymod.teleport_home_success": "§6홈 구역으로 이동했습니다."
+  "message.simcitymod.teleport_home_success": "§6홈 구역으로 이동했습니다.",
+  "message.simcitymod.setspawn_wild_success": "§a현재 위치가 야생 스폰 지점으로 설정되었습니다.",
+  "message.simcitymod.setspawn_home_success": "§a현재 위치가 홈 스폰 지점으로 설정되었습니다.",
+  "message.simcitymod.setspawn_invalid": "§c잘못된 스폰 타입입니다. (wild 또는 home 사용)"
 }
