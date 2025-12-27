@@ -18,5 +18,12 @@
   "message.simcitymod.info_wild": "§fThis area is in the wild.",
   "message.simcitymod.info_owner": "§bThis chunk is %s.",
 
-  "entity.simcitymod.trader": "Trader"
+  "entity.simcitymod.trader": "Trader",
+  "item.simcitymod.return_scroll": "Return Scroll",
+
+  "message.simcitymod.wild_load_error": "§c[SimCity] Failed to load the Wild dimension. Please check the server status.",
+  "message.simcitymod.teleport_wild_success": "§aTeleported to the Wild world!",
+  "message.simcitymod.home_dimension_error": "§c[SimCity] Could not find the saved Home dimension.",
+  "message.simcitymod.home_not_set_default": "§e[SimCity] No return point set. Teleporting to the initial spawn position.",
+  "message.simcitymod.teleport_home_success": "§6Teleported to the Home zone."
 }
