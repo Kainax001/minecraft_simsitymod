@@ -26,9 +26,11 @@
   "message.simcitymod.home_not_set_default": "§e[SimCity] No return point set. Teleporting to the initial spawn position.",
   "message.simcitymod.teleport_home_success": "§6Teleported to the Home zone.",
 
-  "message.simcitymod.setspawn_wild_success": "§aCurrent location set as the Wild spawn point.",
-  "message.simcitymod.setspawn_home_success": "§aCurrent location set as the Home spawn point.",
-  "message.simcitymod.setspawn_invalid": "§cInvalid spawn type. Use 'wild' or 'home'.",
+  "message.simcitymod.setspawn_wild_overworld_only": "Wild spawn can only be set in the Overworld dimension.",
+  "message.simcitymod.setspawn_home_non_overworld_only": "Home spawn can only be set in non-Overworld dimensions.",
+  "message.simcitymod.setspawn_wild_success": "Wild spawn point has been set.",
+  "message.simcitymod.setspawn_home_success": "Home spawn point has been set.",
+  "message.simcitymod.setspawn_invalid": "Invalid spawn type. (Use wild or home)",
 
   "message.simcitymod.admin_set_success": "§aPermission level for %s set to §e%s§a.",
 
@@ -50,5 +52,11 @@
   "simcitymod.command.admin.setcenter.success.residential": "§b[Residential] World border center set! (Size: %s)",
   "simcitymod.command.admin.setcenter.success.nether": "§c[Nether] World border center set! (Size: %s)",
   "simcitymod.command.admin.setcenter.success.end": "§d[End] World border center set! (Size: %s)",
-  "simcitymod.command.admin.setcenter.success.general": "§e[Other] World border center set! (Current size maintained)"
+  "simcitymod.command.admin.setcenter.success.general": "§e[Other] World border center set! (Current size maintained)",
+
+  "message.simcitymod.friend_add_success": "Successfully added %s as a friend.",
+  "message.simcitymod.friend_remove_success": "Successfully removed %s from your friend list.",
+  "message.simcitymod.friend_add_self": "You cannot add yourself as a friend.",
+  "message.simcitymod.friend_already_exists": "This player is already on your friend list.",
+  "message.simcitymod.friend_not_found": "This player is not on your friend list."
 }

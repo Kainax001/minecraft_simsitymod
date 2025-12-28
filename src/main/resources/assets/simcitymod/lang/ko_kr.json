@@ -26,9 +26,11 @@
   "message.simcitymod.home_not_set_default": "§e[SimCity] 설정된 귀환 지점이 없어 초기 위치로 이동합니다.",
   "message.simcitymod.teleport_home_success": "§6홈 구역으로 이동했습니다.",
 
-  "message.simcitymod.setspawn_wild_success": "§a현재 위치가 야생 스폰 지점으로 설정되었습니다.",
-  "message.simcitymod.setspawn_home_success": "§a현재 위치가 홈 스폰 지점으로 설정되었습니다.",
-  "message.simcitymod.setspawn_invalid": "§c잘못된 스폰 타입입니다. (wild 또는 home 사용)",
+  "message.simcitymod.setspawn_wild_overworld_only": "야생 스폰은 오버월드 차원에서만 설정할 수 있습니다.",
+  "message.simcitymod.setspawn_home_non_overworld_only": "홈 스폰은 오버월드가 아닌 차원(야생 등)에서만 설정할 수 있습니다.",
+  "message.simcitymod.setspawn_wild_success": "야생 스폰 지점이 설정되었습니다.",
+  "message.simcitymod.setspawn_home_success": "홈 스폰 지점이 설정되었습니다.",
+  "message.simcitymod.setspawn_invalid": "잘못된 스폰 타입입니다. (wild 또는 home 사용)",
 
   "message.simcitymod.admin_set_success": "§a%s님의 권한이 §e%s§a(으)로 설정되었습니다.",
 
@@ -50,5 +52,11 @@
   "simcitymod.command.admin.setcenter.success.residential": "§b[거주구역] 월드 보더 중심 설정 완료! (크기: %s)",
   "simcitymod.command.admin.setcenter.success.nether": "§c[네더] 월드 보더 중심 설정 완료! (크기: %s)",
   "simcitymod.command.admin.setcenter.success.end": "§d[엔더] 월드 보더 중심 설정 완료! (크기: %s)",
-  "simcitymod.command.admin.setcenter.success.general": "§e[기타] 월드 보더 중심 설정 완료! (현재 크기 유지)"
+  "simcitymod.command.admin.setcenter.success.general": "§e[기타] 월드 보더 중심 설정 완료! (현재 크기 유지)",
+
+  "message.simcitymod.friend_add_success": "%s님을 친구로 등록했습니다.",
+  "message.simcitymod.friend_remove_success": "%s님을 친구 목록에서 삭제했습니다.",
+  "message.simcitymod.friend_add_self": "자기 자신은 친구로 등록할 수 없습니다.",
+  "message.simcitymod.friend_already_exists": "이미 친구로 등록된 플레이어입니다.",
+  "message.simcitymod.friend_not_found": "친구 목록에 해당 플레이어가 없습니다."
 }

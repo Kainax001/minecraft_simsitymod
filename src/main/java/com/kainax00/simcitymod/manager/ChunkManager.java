@@ -1,6 +1,7 @@
 package com.kainax00.simcitymod.manager;
 
 import net.minecraft.world.level.ChunkPos;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import com.kainax00.simcitymod.data.info.ChunkInfo;
  */
 public class ChunkManager {
     // Stores ChunkInfo (Owner + Type) mapped by the chunk's long position key.
-    private static Map<Long, ChunkInfo> chunkData = new HashMap<>();
+    private static Map<Long, ChunkInfo> chunkData = new ConcurrentHashMap<>();
 
     /**
      * Sets the full information for a specific chunk.

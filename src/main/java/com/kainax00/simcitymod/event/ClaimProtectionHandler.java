@@ -2,6 +2,7 @@ package com.kainax00.simcitymod.event;
 
 import com.kainax00.simcitymod.SimcityMod;
 import com.kainax00.simcitymod.manager.ChunkManager;
+import com.kainax00.simcitymod.manager.PlayerDataManager;
 import com.kainax00.simcitymod.data.enums.ChunkType;
 import com.kainax00.simcitymod.registry.ModItems;
 import com.kainax00.simcitymod.util.PermissionUtil;
@@ -90,7 +91,10 @@ public class ClaimProtectionHandler {
 
         if (type == ChunkType.RESIDENTIAL) {
             UUID owner = ChunkManager.getOwner(chunkPos);
-            return owner != null && !owner.equals(player.getUUID());
+            
+            if (owner != null && !owner.equals(player.getUUID()) && !PlayerDataManager.isFriend(owner, player.getUUID())) {
+                return true;
+            }
         }
 
         return false;

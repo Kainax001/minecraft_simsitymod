@@ -4,27 +4,89 @@ import com.kainax00.simcitymod.config.Config;
 import com.kainax00.simcitymod.data.enums.PermissionLevel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class PlayerInfo {
-    public UUID uuid;
-    public String playerName;
+    private UUID uuid;
+    private String playerName;
+    private Set<UUID> friends;
     
-    public int bonusLimit;
-    public int maxLimit;
+    private int bonusLimit;
+    private int baseLimit;
+    private int maxLimit;
     
-    public int claimedCount;
-    public List<Long> claimedChunks;
-    public PermissionLevel permissionLevel = PermissionLevel.NONE;
+    private int claimedCount;
+    private List<Long> claimedChunks;
+    private PermissionLevel permissionLevel;
 
     public PlayerInfo(UUID uuid, String playerName) {
         this.uuid = uuid;
         this.playerName = playerName;
+        this.friends = new HashSet<>();
         this.bonusLimit = 0;
-        this.maxLimit = Config.MAX_CLAIMS_PER_PLAYER.get();
+
+        // [로직 수정] 초기 생성 시 Config 값을 가져와서 base와 max를 설정
+        int currentBase = 4;
+        if (Config.MAX_CLAIMS_PER_PLAYER != null) {
+            currentBase = Config.MAX_CLAIMS_PER_PLAYER.get();
+        }
+        
+        this.baseLimit = currentBase;
+        this.maxLimit = currentBase + this.bonusLimit; 
+        
         this.claimedCount = 0;
         this.claimedChunks = new ArrayList<>();
         this.permissionLevel = PermissionLevel.NONE;
     }
+
+    // ==========================================
+    // Getters & Setters
+    // ==========================================
+
+    public UUID getUuid() { return uuid; }
+    public void setUuid(UUID uuid) { this.uuid = uuid; }
+
+    public String getPlayerName() { return playerName; }
+    public void setPlayerName(String playerName) { this.playerName = playerName; }
+
+    public Set<UUID> getFriends() { 
+        if (this.friends == null) this.friends = new HashSet<>();
+        return friends; 
+    }
+    public void setFriends(Set<UUID> friends) { this.friends = friends; }
+
+    public int getBaseLimit() { 
+        if (Config.MAX_CLAIMS_PER_PLAYER != null) {
+            this.baseLimit = Config.MAX_CLAIMS_PER_PLAYER.get();
+        }
+        return baseLimit; 
+    }
+    public void setBaseLimit(int baseLimit) { this.baseLimit = baseLimit; }
+
+    public int getBonusLimit() { return bonusLimit; }
+    public void setBonusLimit(int bonusLimit) { this.bonusLimit = bonusLimit; }
+
+    public int getMaxLimit() { 
+        this.maxLimit = getBaseLimit() + this.bonusLimit;
+        return maxLimit; 
+    }
+    public void setMaxLimit(int maxLimit) { this.maxLimit = maxLimit; }
+
+    public int getClaimedCount() { return claimedCount; }
+    public void setClaimedCount(int claimedCount) { this.claimedCount = claimedCount; }
+
+    public List<Long> getClaimedChunks() {
+        if (this.claimedChunks == null) this.claimedChunks = new ArrayList<>();
+        return claimedChunks;
+    }
+    public void setClaimedChunks(List<Long> claimedChunks) { this.claimedChunks = claimedChunks; }
+
+    public PermissionLevel getPermissionLevel() {
+        if (this.permissionLevel == null) this.permissionLevel = PermissionLevel.NONE;
+        return permissionLevel;
+    }
+    public void setPermissionLevel(PermissionLevel permissionLevel) { this.permissionLevel = permissionLevel; }
 }

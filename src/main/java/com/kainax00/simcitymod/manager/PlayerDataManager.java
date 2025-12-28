@@ -12,6 +12,9 @@ import com.kainax00.simcitymod.config.Config;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.LevelResource;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -19,7 +22,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.HashSet;
 
 public class PlayerDataManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
@@ -40,6 +45,31 @@ public class PlayerDataManager {
     private static Path getClaimsPath(MinecraftServer server) {
         return server.getWorldPath(LevelResource.ROOT).resolve("simcity_claims.json");
     }
+
+    // ==========================================
+    // Event Handlers
+    // ==========================================
+
+    @SubscribeEvent
+    public static void onServerStarting(ServerStartingEvent event) {
+        loadAll(event.getServer());
+    }
+
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+        saveAll(event.getServer());
+    }
+
+    @SubscribeEvent
+    public static void onWorldSave(net.minecraftforge.event.level.LevelEvent.Save event) {
+        if (event.getLevel() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            saveAll(serverLevel.getServer());
+        }
+    }
+
+    // ==========================================
+    // Core Logic 
+    // ==========================================
 
     public static void loadAll(MinecraftServer server) {
         if (server == null) return;
@@ -62,11 +92,13 @@ public class PlayerDataManager {
             if (players == null) players = new HashMap<>();
 
             for (PlayerInfo info : players.values()) {
-                if (info.permissionLevel == null) {
-                    info.permissionLevel = PermissionLevel.NONE;
+                if (info.getPermissionLevel() == null) {
+                    info.setPermissionLevel(PermissionLevel.NONE);
+                }
+                if (info.getFriends() == null) {
+                    info.setFriends(new HashSet<>());
                 }
             }
-            
         } catch (IOException e) {
             SimcityMod.LOGGER.error("Failed to load player data", e);
         }
@@ -78,7 +110,6 @@ public class PlayerDataManager {
         try (Reader reader = Files.newBufferedReader(path)) {
             Type type = new TypeToken<HashMap<Long, ChunkInfo>>(){}.getType();
             Map<Long, ChunkInfo> loadedData = GSON.fromJson(reader, type);
-
             ChunkManager.setAllChunkData(loadedData);
         } catch (IOException e) {
             SimcityMod.LOGGER.error("Failed to load global chunk data", e);
@@ -103,7 +134,7 @@ public class PlayerDataManager {
 
     public static int getTotalClaimLimit(PlayerInfo info) {
         if (info == null) return Config.MAX_CLAIMS_PER_PLAYER.get();
-        return Config.MAX_CLAIMS_PER_PLAYER.get() + info.bonusLimit;
+        return Config.MAX_CLAIMS_PER_PLAYER.get() + info.getBonusLimit();
     }
 
     public static PlayerInfo getPlayerData(Player player) {
@@ -113,16 +144,52 @@ public class PlayerDataManager {
     public static PlayerInfo getOrCreateData(UUID uuid, String name) {
         return players.computeIfAbsent(uuid, k -> new PlayerInfo(uuid, name));
     }
+    
+    public static PlayerInfo getPlayerData(UUID uuid) {
+        return players.get(uuid);
+    }
 
     public static String getPlayerName(UUID uuid) {
         if (uuid == null) return "None";
-
         PlayerInfo data = players.get(uuid); 
-
-        if (data != null && data.playerName != null) {
-            return data.playerName;
+        if (data != null && data.getPlayerName() != null) {
+            return data.getPlayerName();
         }
-
         return "Unknown (" + uuid.toString().substring(0, 8) + ")";
+    }
+
+    // ==========================================
+    // Friend Management Logic
+    // ==========================================
+
+    public static boolean addFriend(UUID ownerUUID, UUID friendUUID, MinecraftServer server) {
+        PlayerInfo info = getOrCreateData(ownerUUID, "Unknown");
+        if (info.getFriends().contains(friendUUID)) {
+            return false;
+        }
+        info.getFriends().add(friendUUID);
+        return true;
+    }
+
+    public static boolean removeFriend(UUID ownerUUID, UUID friendUUID, MinecraftServer server) {
+        PlayerInfo info = players.get(ownerUUID);
+        if (info != null && info.getFriends().contains(friendUUID)) {
+            info.getFriends().remove(friendUUID);
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isFriend(UUID ownerUUID, UUID visitorUUID) {
+        PlayerInfo info = players.get(ownerUUID);
+        return info != null && info.getFriends().contains(visitorUUID);
+    }
+
+    public static Set<UUID> getFriendList(UUID ownerUUID) {
+        PlayerInfo info = players.get(ownerUUID);
+        if (info != null) {
+            return info.getFriends();
+        }
+        return new HashSet<>();
     }
 }

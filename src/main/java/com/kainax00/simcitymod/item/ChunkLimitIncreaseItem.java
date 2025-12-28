@@ -23,7 +23,9 @@ public class ChunkLimitIncreaseItem extends Item {
         if (!pLevel.isClientSide()) {
             PlayerInfo data = PlayerDataManager.getOrCreateData(pPlayer.getUUID(), pPlayer.getName().getString());
 
-            data.maxLimit += 1;
+            data.setBonusLimit(data.getBonusLimit() + 1);
+
+            data.setMaxLimit(data.getMaxLimit());
 
             PlayerDataManager.saveAll(pLevel.getServer());
 
@@ -32,7 +34,7 @@ public class ChunkLimitIncreaseItem extends Item {
             }
 
             pPlayer.displayClientMessage(
-                Component.translatable("message.simcitymod.limit_increase_success", data.maxLimit),
+                Component.translatable("message.simcitymod.limit_increase_success", data.getMaxLimit()),
                 false
             );
 

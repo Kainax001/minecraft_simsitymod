@@ -20,11 +20,14 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.level.Level;
+
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -54,7 +57,9 @@ public class ModCommands {
                             PermissionLevel newLevel = PermissionLevel.fromId(levelInt);
                             
                             PlayerInfo info = PlayerDataManager.getPlayerData(target);
-                            info.permissionLevel = newLevel;
+
+                            info.setPermissionLevel(newLevel);
+                            PlayerDataManager.saveAll(context.getSource().getServer());
                             
                             // Modified to use translation key
                             context.getSource().sendSuccess(() -> Component.translatable(
@@ -127,33 +132,42 @@ public class ModCommands {
                 )
             )
 
-            // set spawn point command group
+            /// set spawn point command group
             .then(Commands.literal("setspawn")
                 .then(Commands.argument("type", StringArgumentType.word())
                     .suggests((context, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "home"}, builder))
                     .executes(context -> {
                         ServerPlayer player = context.getSource().getPlayerOrException();
                         String type = StringArgumentType.getString(context, "type");
-                        GlobalPos currentPos = GlobalPos.of(player.level().dimension(), player.blockPosition());
 
+                        ResourceKey<Level> currentDimension = player.level().dimension();
+                        GlobalPos currentPos = GlobalPos.of(currentDimension, player.blockPosition());
                         MinecraftServer server = context.getSource().getServer();
 
                         if (type.equals("wild")) {
+                            if (currentDimension != Level.OVERWORLD) {
+                                context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_wild_overworld_only"));
+                                return 0;
+                            }
+                            
                             ServerSpawnData.setWildSpawn(server, currentPos);
-                            // Modified to use translation key
                             context.getSource().sendSuccess(() -> 
                                 Component.translatable("message.simcitymod.setspawn_wild_success"), true);
                             return Command.SINGLE_SUCCESS;
+                            
                         } else if (type.equals("home")) {
+                            if (currentDimension != Level.OVERWORLD) {
+                                context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_home_non_overworld_only"));
+                                return 0;
+                            }
+                            
                             ServerSpawnData.setHomeSpawn(server, currentPos);
-                            // Modified to use translation key
                             context.getSource().sendSuccess(() -> 
                                 Component.translatable("message.simcitymod.setspawn_home_success"), true);
                             return Command.SINGLE_SUCCESS;
+                            
                         } else {
-                            // Modified to use translation key
-                            context.getSource().sendFailure(
-                                Component.translatable("message.simcitymod.setspawn_invalid"));
+                            context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_invalid"));
                             return 0;
                         }
                     })
@@ -184,5 +198,57 @@ public class ModCommands {
             
             // Add new command here
         );
+
+        // /sc friend command group (All players)
+        dispatcher.register(Commands.literal("sc")
+            .then(Commands.literal("friend")
+                // use: /sc friend add <player>
+                .then(Commands.literal("add")
+                    .then(Commands.argument("target", EntityArgument.player())
+                        .executes(context -> {
+                            ServerPlayer owner = context.getSource().getPlayerOrException();
+                            ServerPlayer target = EntityArgument.getPlayer(context, "target");
+
+                            if (owner.getUUID().equals(target.getUUID())) {
+                                context.getSource().sendFailure(Component.translatable("message.simcitymod.friend_add_self"));
+                                return 0;
+                            }
+
+                            boolean success = PlayerDataManager.addFriend(owner.getUUID(), target.getUUID(), context.getSource().getServer());
+
+                            if (success) {
+                                context.getSource().sendSuccess(() -> Component.translatable(
+                                    "message.simcitymod.friend_add_success", target.getName().getString()), true);
+                            } else {
+                                context.getSource().sendFailure(Component.translatable("message.simcitymod.friend_already_exists"));
+                            }
+                            return success ? Command.SINGLE_SUCCESS : 0;
+                        })
+                    )
+                )
+                
+                // use: /sc friend remove <player>
+                .then(Commands.literal("remove")
+                    .then(Commands.argument("target", EntityArgument.player())
+                        .executes(context -> {
+                            ServerPlayer owner = context.getSource().getPlayerOrException();
+                            ServerPlayer target = EntityArgument.getPlayer(context, "target");
+
+                            boolean success = PlayerDataManager.removeFriend(owner.getUUID(), target.getUUID(), context.getSource().getServer());
+
+                            if (success) {
+                                context.getSource().sendSuccess(() -> Component.translatable(
+                                    "message.simcitymod.friend_remove_success", target.getName().getString()), true);
+                            } else {
+                                context.getSource().sendFailure(Component.translatable("message.simcitymod.friend_not_found"));
+                            }
+                            return success ? Command.SINGLE_SUCCESS : 0;
+                        })
+                    )
+                )
+            )
+        );
+
+
     }
 }

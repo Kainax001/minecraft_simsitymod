@@ -4,6 +4,7 @@ import com.kainax00.simcitymod.client.renderer.TraderRenderer;
 import com.kainax00.simcitymod.config.Config;
 import com.kainax00.simcitymod.config.TradeConfig;
 import com.kainax00.simcitymod.event.ClaimProtectionHandler;
+import com.kainax00.simcitymod.manager.PlayerDataManager;
 import com.kainax00.simcitymod.registry.ModItems;
 import com.kainax00.simcitymod.registry.ModEntities;
 
@@ -46,6 +47,9 @@ public final class SimcityMod {
         
         // chunk protection event
         MinecraftForge.EVENT_BUS.register(ClaimProtectionHandler.class);
+
+        MinecraftForge.EVENT_BUS.register(ClaimProtectionHandler.class);
+        MinecraftForge.EVENT_BUS.register(PlayerDataManager.class);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {

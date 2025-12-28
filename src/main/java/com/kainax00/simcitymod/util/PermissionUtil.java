@@ -12,7 +12,10 @@ public class PermissionUtil {
         if (player == null) return false;
 
         PlayerInfo info = PlayerDataManager.getPlayerData(player);
-        if(info.permissionLevel == PermissionLevel.ADMIN) return true;
+
+        if (info != null && info.getPermissionLevel() == PermissionLevel.ADMIN) {
+            return true;
+        }
         return false;
     }
 
