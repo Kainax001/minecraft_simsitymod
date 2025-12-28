@@ -13,21 +13,31 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 
+/**
+ * ServerSpawnData manages the global spawn points for the server (Wild and Home).
+ * Data is persisted in a JSON file within the world directory.
+ */
 public class ServerSpawnData {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String FILE_NAME = "simcity_server_spawn.json";
 
     /**
-     * Inner class to represent the spawn data structure.
-     * Stores information for both wild and home spawn points.
+     * Internal data structure for JSON serialization.
      */
     private static class SpawnData {
         HomeInfo wildSpawn;
         HomeInfo homeSpawn;
     }
 
-    private static SpawnData data = new SpawnData();
+    /**
+     * The data instance is initialized as null to ensure load(server) is called 
+     * upon the first access, preventing data loss after server restarts.
+     */
+    private static SpawnData data = null;
 
+    /**
+     * Resolves the path to the JSON storage file.
+     */
     private static File getFile(MinecraftServer server) {
         Path worldPath = server.getWorldPath(LevelResource.ROOT);
         return worldPath.resolve(FILE_NAME).toFile();
@@ -36,6 +46,10 @@ public class ServerSpawnData {
     // ==========================================
     // 1. Wild Spawn Methods
     // ==========================================
+
+    /**
+     * Sets the global wild spawn point and saves to file.
+     */
     public static void setWildSpawn(MinecraftServer server, GlobalPos pos) {
         if (data == null) load(server);
         
@@ -43,6 +57,9 @@ public class ServerSpawnData {
         save(server);
     }
 
+    /**
+     * Retrieves the global wild spawn point, loading from file if necessary.
+     */
     public static GlobalPos getWildSpawn(MinecraftServer server) {
         if (data == null) load(server);
 
@@ -55,6 +72,10 @@ public class ServerSpawnData {
     // ==========================================
     // 2. Home Spawn Methods
     // ==========================================
+
+    /**
+     * Sets the global residential (home) spawn point and saves to file.
+     */
     public static void setHomeSpawn(MinecraftServer server, GlobalPos pos) {
         if (data == null) load(server);
         
@@ -62,6 +83,9 @@ public class ServerSpawnData {
         save(server);
     }
 
+    /**
+     * Retrieves the global home spawn point, loading from file if necessary.
+     */
     public static GlobalPos getHomeSpawn(MinecraftServer server) {
         if (data == null) load(server);
 
@@ -74,6 +98,11 @@ public class ServerSpawnData {
     // ==========================================
     // File I/O Operations (Load & Save)
     // ==========================================
+
+    /**
+     * Loads the spawn data from the JSON file.
+     * If the file does not exist, it initializes a new SpawnData instance.
+     */
     private static void load(MinecraftServer server) {
         File file = getFile(server);
         if (!file.exists()) {
@@ -93,7 +122,13 @@ public class ServerSpawnData {
         }
     }
 
+    /**
+     * Saves the current memory state of SpawnData to the JSON file.
+     */
     private static void save(MinecraftServer server) {
+        // Prevent saving if data has not been initialized or loaded
+        if (data == null) return;
+
         File file = getFile(server);
         try (FileWriter writer = new FileWriter(file)) {
             GSON.toJson(data, writer);

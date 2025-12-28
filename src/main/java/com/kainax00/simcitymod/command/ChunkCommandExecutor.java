@@ -24,14 +24,14 @@ public class ChunkCommandExecutor {
 
             ChunkType type = parseChunkType(typeStr);
             if (type == null) {
-                source.sendFailure(Component.literal("§cInvalid Chunk Type."));
+                source.sendFailure(Component.translatable("simcitymod.command.chunk.invalid_type"));
                 return 0;
             }
 
             updateChunk(chunkPos, type);
             PlayerDataManager.saveAll(source.getServer());
 
-            source.sendSuccess(() -> Component.literal("§aChunk type set to: §e" + type.name()), true);
+            source.sendSuccess(() -> Component.translatable("simcitymod.command.chunk.set.success", type.name()), true);
             return 1;
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class ChunkCommandExecutor {
             
             ChunkType type = parseChunkType(typeStr);
             if (type == null) {
-                source.sendFailure(Component.literal("§cInvalid Chunk Type."));
+                source.sendFailure(Component.translatable("simcitymod.command.chunk.invalid_type"));
                 return 0;
             }
 
@@ -70,7 +70,7 @@ public class ChunkCommandExecutor {
             PlayerDataManager.saveAll(source.getServer());
             
             final int total = count;
-            source.sendSuccess(() -> Component.literal("§aUpdated §e" + total + " §achunks (Square) to: §b" + type.name()), true);
+            source.sendSuccess(() -> Component.translatable("simcitymod.command.chunk.set.square.success", total, type.name()), true);
             return 1;
 
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class ChunkCommandExecutor {
             
             ChunkType type = parseChunkType(typeStr);
             if (type == null) {
-                source.sendFailure(Component.literal("§cInvalid Chunk Type."));
+                source.sendFailure(Component.translatable("simcitymod.command.chunk.invalid_type"));
                 return 0;
             }
 
@@ -108,7 +108,7 @@ public class ChunkCommandExecutor {
             PlayerDataManager.saveAll(source.getServer());
             
             final int total = count;
-            source.sendSuccess(() -> Component.literal("§aUpdated §e" + total + " §achunks (Circle) to: §b" + type.name()), true);
+            source.sendSuccess(() -> Component.translatable("simcitymod.command.chunk.set.circle.success", total, type.name()), true);
             return 1;
 
         } catch (Exception e) {
@@ -125,10 +125,12 @@ public class ChunkCommandExecutor {
             ChunkType type = ChunkManager.getChunkType(chunkPos);
             UUID owner = ChunkManager.getOwner(chunkPos);
 
-            player.displayClientMessage(Component.literal("§6=== Chunk Info ==="), false);
-            player.displayClientMessage(Component.literal("§eLocation: §f" + chunkPos.toString()), false);
-            player.displayClientMessage(Component.literal("§eType: §b" + type.name()), false);
-            player.displayClientMessage(Component.literal("§eOwner: §f" + (owner != null ? owner.toString() : "None")), false);
+            String ownerName = (owner != null) ? owner.toString() : Component.translatable("simcitymod.command.chunk.info.owner.none").getString();
+
+            player.displayClientMessage(Component.translatable("simcitymod.command.chunk.info.header"), false);
+            player.displayClientMessage(Component.translatable("simcitymod.command.chunk.info.location", chunkPos.toString()), false);
+            player.displayClientMessage(Component.translatable("simcitymod.command.chunk.info.type", type.name()), false);
+            player.displayClientMessage(Component.translatable("simcitymod.command.chunk.info.owner", ownerName), false);
             
             return 1;
         } catch (Exception e) {

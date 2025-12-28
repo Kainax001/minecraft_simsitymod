@@ -2,6 +2,8 @@
   "creativetab.simcitymod_tab": "심시티 모드",
   "item.simcitymod.chunk_claimer": "청크 점유권",
   "item.simcitymod.chunk_unclaimer": "청크 점유 해제권",
+  "item.simcitymod.return_scroll": "귀환 주문서",
+  "entity.simcitymod.trader": "상인",
 
   "message.simcitymod.chunk_claimed_success": "§a청크가 성공적으로 점유되었습니다! (%s/%s)",
   "message.simcitymod.chunk_already_owned": "§c당신은 이미 이 청크를 소유하고 있습니다.",
@@ -9,7 +11,6 @@
   "message.simcitymod.chunk_protected": "§c이 지역은 보호되고 있습니다!",
   "message.simcitymod.claim_limit_exceeded": "§c점유 한도에 도달했습니다! (최대: %s개)",
   "message.simcitymod.chunk_not_residential": "§c이 청크는 주거지역이 아니므로 점유할 수 없습니다.",
-
   "message.simcitymod.chunk_not_claimed": "§c이 청크는 점유되지 않은 상태입니다.",
   "message.simcitymod.not_your_chunk": "§c당신의 청크가 아닙니다!",
   "message.simcitymod.chunk_unclaimed": "§e청크 점유 해제! 점유 개수(%s/%s)",
@@ -17,15 +18,35 @@
   "message.simcitymod.info_wild": "§f이곳은 야생 지역입니다.",
   "message.simcitymod.info_owner": "§b이 청크는 %s의 소유입니다.",
 
-  "entity.simcitymod.trader": "상인",
-  "item.simcitymod.return_scroll": "귀환 주문서",
-
   "message.simcitymod.wild_load_error": "§c[SimCity] 야생 차원을 불러올 수 없습니다. 서버 확인이 필요합니다.",
   "message.simcitymod.teleport_wild_success": "§a야생 월드로 이동했습니다!",
   "message.simcitymod.home_dimension_error": "§c[SimCity] 저장된 홈 차원을 찾을 수 없습니다.",
   "message.simcitymod.home_not_set_default": "§e[SimCity] 설정된 귀환 지점이 없어 초기 위치로 이동합니다.",
   "message.simcitymod.teleport_home_success": "§6홈 구역으로 이동했습니다.",
+
   "message.simcitymod.setspawn_wild_success": "§a현재 위치가 야생 스폰 지점으로 설정되었습니다.",
   "message.simcitymod.setspawn_home_success": "§a현재 위치가 홈 스폰 지점으로 설정되었습니다.",
-  "message.simcitymod.setspawn_invalid": "§c잘못된 스폰 타입입니다. (wild 또는 home 사용)"
+  "message.simcitymod.setspawn_invalid": "§c잘못된 스폰 타입입니다. (wild 또는 home 사용)",
+
+  "message.simcitymod.admin_set_success": "§a%s님의 권한이 §e%s§a(으)로 설정되었습니다.",
+
+  "message.simcitymod.reset.not_supported_dim": "§c이 차원은 리셋 기능을 지원하지 않습니다. (WILD/NETHER/END 지역에서 사용하세요)",
+  "message.simcitymod.reset.success": "§a%s 차원의 다음 버전(v%s) 생성이 완료되었습니다! (시드: %s)",
+  "message.simcitymod.reset.restart_required": "§e§l[중요] §r§e서버를 재시작해야 새로운 지형이 적용됩니다.",
+
+  "simcitymod.command.chunk.invalid_type": "§c잘못된 청크 타입입니다.",
+  "simcitymod.command.chunk.set.success": "§a청크 타입이 변경되었습니다: §e%s",
+  "simcitymod.command.chunk.set.square.success": "§a%s개의 청크(사각형)가 업데이트되었습니다: §b%s",
+  "simcitymod.command.chunk.set.circle.success": "§a%s개의 청크(원형)가 업데이트되었습니다: §b%s",
+  "simcitymod.command.chunk.info.header": "§6=== 청크 정보 ===",
+  "simcitymod.command.chunk.info.location": "§e위치: §f%s",
+  "simcitymod.command.chunk.info.type": "§e타입: §b%s",
+  "simcitymod.command.chunk.info.owner": "§e소유자: §f%s",
+  "simcitymod.command.chunk.info.owner.none": "없음",
+
+  "simcitymod.command.admin.setcenter.success.wild": "§a[야생] 월드 보더 중심 설정 완료! (크기: %s)",
+  "simcitymod.command.admin.setcenter.success.residential": "§b[거주구역] 월드 보더 중심 설정 완료! (크기: %s)",
+  "simcitymod.command.admin.setcenter.success.nether": "§c[네더] 월드 보더 중심 설정 완료! (크기: %s)",
+  "simcitymod.command.admin.setcenter.success.end": "§d[엔더] 월드 보더 중심 설정 완료! (크기: %s)",
+  "simcitymod.command.admin.setcenter.success.general": "§e[기타] 월드 보더 중심 설정 완료! (현재 크기 유지)"
 }

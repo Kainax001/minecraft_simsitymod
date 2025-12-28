@@ -2,31 +2,51 @@
   "creativetab.simcitymod_tab": "SimCity Mod",
   "item.simcitymod.chunk_claimer": "Chunk Claimer",
   "item.simcitymod.chunk_unclaimer": "Chunk UnClaimer",
-  
-  
-  "message.simcitymod.chunk_protected": "§cThis area is protected!",
+  "item.simcitymod.return_scroll": "Return Scroll",
+  "entity.simcitymod.trader": "Trader",
+
   "message.simcitymod.chunk_claimed_success": "§aSuccessfully claimed! (%s/%s)",
   "message.simcitymod.chunk_already_owned": "§cYou already own this chunk.",
   "message.simcitymod.chunk_already_claimed": "§cThis chunk is already claimed by %s",
+  "message.simcitymod.chunk_protected": "§cThis area is protected!",
   "message.simcitymod.claim_limit_exceeded": "§cClaim limit reached! (Max: %s)",
   "message.simcitymod.chunk_not_residential": "§cThis chunk is not residential and cannot be claimed.",
-  
   "message.simcitymod.chunk_not_claimed": "§cThis chunk is not claimed.",
   "message.simcitymod.not_your_chunk": "§cYou do not own this chunk!",
   "message.simcitymod.chunk_unclaimed": "§eChunk unclaimed! Remaining: (%s/%s)",
-  
-  "message.simcitymod.info_wild": "§fThis area is in the wild.",
-  "message.simcitymod.info_owner": "§bThis chunk is %s.",
 
-  "entity.simcitymod.trader": "Trader",
-  "item.simcitymod.return_scroll": "Return Scroll",
+  "message.simcitymod.info_wild": "§fThis area is in the wild.",
+  "message.simcitymod.info_owner": "§bThis chunk is owned by %s.",
 
   "message.simcitymod.wild_load_error": "§c[SimCity] Failed to load the Wild dimension. Please check the server status.",
   "message.simcitymod.teleport_wild_success": "§aTeleported to the Wild world!",
   "message.simcitymod.home_dimension_error": "§c[SimCity] Could not find the saved Home dimension.",
   "message.simcitymod.home_not_set_default": "§e[SimCity] No return point set. Teleporting to the initial spawn position.",
   "message.simcitymod.teleport_home_success": "§6Teleported to the Home zone.",
+
   "message.simcitymod.setspawn_wild_success": "§aCurrent location set as the Wild spawn point.",
   "message.simcitymod.setspawn_home_success": "§aCurrent location set as the Home spawn point.",
-  "message.simcitymod.setspawn_invalid": "§cInvalid spawn type. Use 'wild' or 'home'."
+  "message.simcitymod.setspawn_invalid": "§cInvalid spawn type. Use 'wild' or 'home'.",
+
+  "message.simcitymod.admin_set_success": "§aPermission level for %s set to §e%s§a.",
+
+  "message.simcitymod.reset.not_supported_dim": "§cReset is not supported in this dimension. (Use in WILD/NETHER/END)",
+  "message.simcitymod.reset.success": "§aNext version (v%s) of dimension %s generated successfully! (Seed: %s)",
+  "message.simcitymod.reset.restart_required": "§e§l[IMPORTANT] §r§eServer restart required to apply new terrain.",
+
+  "simcitymod.command.chunk.invalid_type": "§cInvalid Chunk Type.",
+  "simcitymod.command.chunk.set.success": "§aChunk type set to: §e%s",
+  "simcitymod.command.chunk.set.square.success": "§aUpdated %s chunks (Square) to: §b%s",
+  "simcitymod.command.chunk.set.circle.success": "§aUpdated %s chunks (Circle) to: §b%s",
+  "simcitymod.command.chunk.info.header": "§6=== Chunk Info ===",
+  "simcitymod.command.chunk.info.location": "§eLocation: §f%s",
+  "simcitymod.command.chunk.info.type": "§eType: §b%s",
+  "simcitymod.command.chunk.info.owner": "§eOwner: §f%s",
+  "simcitymod.command.chunk.info.owner.none": "None",
+
+  "simcitymod.command.admin.setcenter.success.wild": "§a[Wild] World border center set! (Size: %s)",
+  "simcitymod.command.admin.setcenter.success.residential": "§b[Residential] World border center set! (Size: %s)",
+  "simcitymod.command.admin.setcenter.success.nether": "§c[Nether] World border center set! (Size: %s)",
+  "simcitymod.command.admin.setcenter.success.end": "§d[End] World border center set! (Size: %s)",
+  "simcitymod.command.admin.setcenter.success.general": "§e[Other] World border center set! (Current size maintained)"
 }

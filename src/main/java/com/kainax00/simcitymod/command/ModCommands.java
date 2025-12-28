@@ -5,12 +5,14 @@ import com.kainax00.simcitymod.data.ServerSpawnData;
 import com.kainax00.simcitymod.data.enums.ChunkType;
 import com.kainax00.simcitymod.data.enums.PermissionLevel;
 import com.kainax00.simcitymod.data.info.PlayerInfo;
+import com.kainax00.simcitymod.manager.MaintenanceManager;
 import com.kainax00.simcitymod.manager.PlayerDataManager;
 import com.kainax00.simcitymod.manager.TeleportManager;
 import com.kainax00.simcitymod.util.PermissionUtil;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -127,7 +129,6 @@ public class ModCommands {
 
             // set spawn point command group
             .then(Commands.literal("setspawn")
-                .requires(source -> PermissionUtil.hasAdminPermission(source))
                 .then(Commands.argument("type", StringArgumentType.word())
                     .suggests((context, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "home"}, builder))
                     .executes(context -> {
@@ -158,6 +159,30 @@ public class ModCommands {
                     })
                 )
             )
+
+            // Maintenance command group (Terrain Reset)
+            .then(Commands.literal("maintenance")
+                .then(Commands.literal("reset")
+                    .then(Commands.argument("type", StringArgumentType.word())
+                        // Suggesting types: wild, nether, end
+                        .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "nether", "end"}, builder))
+                        .executes(context -> MaintenanceManager.executeReset(
+                            context, StringArgumentType.getString(context, "type"), null))
+                        .then(Commands.argument("seed", LongArgumentType.longArg())
+                            .executes(context -> MaintenanceManager.executeReset(
+                                context, 
+                                StringArgumentType.getString(context, "type"), 
+                                LongArgumentType.getLong(context, "seed")))
+                        )
+                    )
+                )
+            )
+
+            .then(Commands.literal("setcenter")
+                .executes(WorldCommandExecutor::setWorldCenter)
+            )
+            
+            // Add new command here
         );
     }
 }
