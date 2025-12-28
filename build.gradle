@@ -81,11 +81,23 @@ minecraft {
 
             //args '--username', 'Dev0'
             //args '--uuid', '00000000-0000-0000-0000-000000000000'
+
+            // memory use
+            jvmArgs "-Xms8G", "-Xmx16G" 
+            
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
         }
 
         server {
             property 'forge.enabledGameTestNamespaces', mod_id
             args '--nogui'
+
+            // memory use
+            jvmArgs "-Xms8G", "-Xmx16G" 
+            
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.

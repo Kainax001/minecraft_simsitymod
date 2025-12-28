@@ -5,6 +5,7 @@ import com.kainax00.simcitymod.data.ServerSpawnData;
 import com.kainax00.simcitymod.data.enums.ChunkType;
 import com.kainax00.simcitymod.data.enums.PermissionLevel;
 import com.kainax00.simcitymod.data.info.PlayerInfo;
+import com.kainax00.simcitymod.manager.ChunkPreGenerator;
 import com.kainax00.simcitymod.manager.MaintenanceManager;
 import com.kainax00.simcitymod.manager.PlayerDataManager;
 import com.kainax00.simcitymod.manager.TeleportManager;
@@ -22,6 +23,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
@@ -188,6 +190,27 @@ public class ModCommands {
                                 StringArgumentType.getString(context, "type"), 
                                 LongArgumentType.getLong(context, "seed")))
                         )
+                    )
+                )
+
+                // use: /sim maintenance pregen
+                .then(Commands.literal("pregen")
+                    .executes(context -> {
+                        ServerLevel level = context.getSource().getLevel();
+                        ChunkPreGenerator.startPreGeneration(level);
+                        context.getSource().sendSuccess(() -> 
+                        Component.translatable("message.simcitymod.pregen_start"), 
+                        true);
+                        return Command.SINGLE_SUCCESS;
+                    })
+                    .then(Commands.literal("stop")
+                        .executes(context -> {
+                            ChunkPreGenerator.stopPreGeneration();
+                            context.getSource().sendSuccess(() -> 
+                            Component.translatable("message.simcitymod.pregen_stop_requested"), 
+                            true);
+                            return Command.SINGLE_SUCCESS;
+                        })
                     )
                 )
             )

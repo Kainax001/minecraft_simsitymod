@@ -58,5 +58,8 @@
   "message.simcitymod.friend_remove_success": "Successfully removed %s from your friend list.",
   "message.simcitymod.friend_add_self": "You cannot add yourself as a friend.",
   "message.simcitymod.friend_already_exists": "This player is already on your friend list.",
-  "message.simcitymod.friend_not_found": "This player is not on your friend list."
+  "message.simcitymod.friend_not_found": "This player is not on your friend list.",
+
+  "message.simcitymod.pregen_start": "§a[SimCity] Started pre-generating chunks for the current dimension. Check server logs for progress.",
+  "message.simcitymod.pregen_stop_requested": "§c[SimCity] Pre-generation stop requested."
 }
