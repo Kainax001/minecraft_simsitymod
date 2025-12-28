@@ -1,6 +1,6 @@
 package com.kainax00.simcitymod.util;
 
-import com.kainax00.simcitymod.data.PlayerDataManager;
+import com.kainax00.simcitymod.manager.PlayerDataManager;
 import com.kainax00.simcitymod.data.enums.PermissionLevel;
 import com.kainax00.simcitymod.data.info.PlayerInfo;
 import net.minecraft.commands.CommandSourceStack;

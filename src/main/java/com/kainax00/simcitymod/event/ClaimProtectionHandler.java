@@ -1,7 +1,7 @@
 package com.kainax00.simcitymod.event;
 
 import com.kainax00.simcitymod.SimcityMod;
-import com.kainax00.simcitymod.data.ChunkManager;
+import com.kainax00.simcitymod.manager.ChunkManager;
 import com.kainax00.simcitymod.data.enums.ChunkType;
 import com.kainax00.simcitymod.registry.ModItems;
 import com.kainax00.simcitymod.util.PermissionUtil;

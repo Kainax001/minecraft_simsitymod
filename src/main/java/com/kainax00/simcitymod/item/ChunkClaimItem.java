@@ -2,8 +2,8 @@ package com.kainax00.simcitymod.item;
 
 import java.util.UUID;
 import com.kainax00.simcitymod.SimcityMod;
-import com.kainax00.simcitymod.data.ChunkManager;
-import com.kainax00.simcitymod.data.PlayerDataManager;
+import com.kainax00.simcitymod.manager.ChunkManager;
+import com.kainax00.simcitymod.manager.PlayerDataManager;
 import com.kainax00.simcitymod.data.enums.ChunkType;
 import com.kainax00.simcitymod.data.info.PlayerInfo;
 

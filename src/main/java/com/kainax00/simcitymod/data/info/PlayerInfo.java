@@ -10,8 +10,10 @@ import java.util.UUID;
 public class PlayerInfo {
     public UUID uuid;
     public String playerName;
+    
     public int bonusLimit;
     public int maxLimit;
+    
     public int claimedCount;
     public List<Long> claimedChunks;
     public PermissionLevel permissionLevel = PermissionLevel.NONE;

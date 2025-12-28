@@ -1,7 +1,7 @@
 package com.kainax00.simcitymod.registry;
 
 import com.kainax00.simcitymod.SimcityMod;
-import com.kainax00.simcitymod.data.PlayerDataManager;
+import com.kainax00.simcitymod.manager.PlayerDataManager;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
