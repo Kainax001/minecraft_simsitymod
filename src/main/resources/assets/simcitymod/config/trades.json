@@ -10,5 +10,17 @@
     "inputCount": 16,
     "outputItem": "simcitymod:chunk_unclaimer",
     "outputCount": 1
+  },
+  {
+    "inputItem": "minecraft:diamond",
+    "inputCount": 10,
+    "outputItem": "simcitymod:chunk_limit_increase_item",
+    "outputCount": 1
+  },
+  {
+    "inputItem": "minecraft:iron_ingot",
+    "inputCount": 8,
+    "outputItem": "simcitymod:return_scroll",
+    "outputCount": 1
   }
 ]

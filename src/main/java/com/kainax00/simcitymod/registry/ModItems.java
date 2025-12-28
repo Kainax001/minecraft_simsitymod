@@ -2,6 +2,7 @@ package com.kainax00.simcitymod.registry;
 
 import com.kainax00.simcitymod.SimcityMod;
 import com.kainax00.simcitymod.item.ChunkClaimItem;
+import com.kainax00.simcitymod.item.ChunkLimitIncreaseItem;
 import com.kainax00.simcitymod.item.ChunkUnclaimItem;
 import com.kainax00.simcitymod.item.ReturnScrollItem;
 import com.kainax00.simcitymod.item.TraderSpawnEggItem;
@@ -31,6 +32,14 @@ public class ModItems {
                 .setId(ITEMS.key("chunk_unclaimer"))
                 .stacksTo(1)
         )
+    );
+
+    public static final RegistryObject<Item> CHUNK_LIMIT_INCREASE_ITEM = ITEMS.register("chunk_limit_increase_item", 
+            () -> new ChunkLimitIncreaseItem(
+                new Item.Properties()
+                .setId(ITEMS.key("chunk_limit_increase_item"))
+                .stacksTo(1)
+            )
     );
 
     public static final RegistryObject<Item> TRADER_SPAWN_EGG = ITEMS.register("trader_spawn_egg",

@@ -47,7 +47,7 @@ public class ChunkClaimItem extends Item {
                 
                 if (currentCount >= maxAllowed) {
                     player.displayClientMessage(
-                        Component.translatable("message.simcitymod.claim_limit_reached", currentCount, maxAllowed), 
+                        Component.translatable("message.simcitymod.claim_limit_exceeded", currentCount, maxAllowed), 
                         false
                     );
                     return InteractionResult.FAIL;

@@ -7,6 +7,7 @@ import com.kainax00.simcitymod.SimcityMod;
 import com.kainax00.simcitymod.data.enums.PermissionLevel;
 import com.kainax00.simcitymod.data.info.ChunkInfo;
 import com.kainax00.simcitymod.data.info.PlayerInfo;
+import com.kainax00.simcitymod.config.Config;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -98,6 +99,11 @@ public class PlayerDataManager {
         } catch (IOException e) {
             SimcityMod.LOGGER.error("Failed to save global chunk data", e);
         }
+    }
+
+    public static int getTotalClaimLimit(PlayerInfo info) {
+        if (info == null) return Config.MAX_CLAIMS_PER_PLAYER.get();
+        return Config.MAX_CLAIMS_PER_PLAYER.get() + info.bonusLimit;
     }
 
     public static PlayerInfo getPlayerData(Player player) {

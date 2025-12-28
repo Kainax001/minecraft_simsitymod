@@ -2,6 +2,7 @@
   "creativetab.simcitymod_tab": "SimCity Mod",
   "item.simcitymod.chunk_claimer": "Chunk Claimer",
   "item.simcitymod.chunk_unclaimer": "Chunk UnClaimer",
+  "item.simcitymod.chunk_limit_increase_item": "Chunk Limit increase Ticket",
   "item.simcitymod.return_scroll": "Return Scroll",
   "entity.simcitymod.trader": "Trader",
 
@@ -14,6 +15,7 @@
   "message.simcitymod.chunk_not_claimed": "§cThis chunk is not claimed.",
   "message.simcitymod.not_your_chunk": "§cYou do not own this chunk!",
   "message.simcitymod.chunk_unclaimed": "§eChunk unclaimed! Remaining: (%s/%s)",
+  "message.simcitymod.limit_increase_success": "Chunk claim limit increased! (Current limit: %s)",
 
   "message.simcitymod.info_wild": "§fThis area is in the wild.",
   "message.simcitymod.info_owner": "§bThis chunk is owned by %s.",

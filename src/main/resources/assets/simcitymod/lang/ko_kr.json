@@ -2,6 +2,7 @@
   "creativetab.simcitymod_tab": "심시티 모드",
   "item.simcitymod.chunk_claimer": "청크 점유권",
   "item.simcitymod.chunk_unclaimer": "청크 점유 해제권",
+  "item.simcitymod.chunk_limit_increase_item": "청크점유한도 증가 티켓",
   "item.simcitymod.return_scroll": "귀환 주문서",
   "entity.simcitymod.trader": "상인",
 
@@ -14,6 +15,7 @@
   "message.simcitymod.chunk_not_claimed": "§c이 청크는 점유되지 않은 상태입니다.",
   "message.simcitymod.not_your_chunk": "§c당신의 청크가 아닙니다!",
   "message.simcitymod.chunk_unclaimed": "§e청크 점유 해제! 점유 개수(%s/%s)",
+  "message.simcitymod.limit_increase_success": "청크 점유 한도가 증가했습니다! (현재 한도: %s)",
 
   "message.simcitymod.info_wild": "§f이곳은 야생 지역입니다.",
   "message.simcitymod.info_owner": "§b이 청크는 %s의 소유입니다.",
