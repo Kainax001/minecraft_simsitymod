@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * ServerSpawnData manages the global spawn points for the server (Wild and Home).
+ * ServerSpawnData manages the global spawn points for the server (Wild, Home, Nether, End).
  * Data is persisted in a JSON file within the world directory.
  */
 public class ServerSpawnData {
@@ -27,6 +27,8 @@ public class ServerSpawnData {
     private static class SpawnData {
         HomeInfo wildSpawn;
         HomeInfo homeSpawn;
+        HomeInfo netherSpawn; // Added
+        HomeInfo endSpawn;    // Added
     }
 
     /**
@@ -93,6 +95,58 @@ public class ServerSpawnData {
             return data.homeSpawn.toGlobalPos();
         }
         return null; 
+    }
+
+    // ==========================================
+    // 3. Nether Spawn Methods
+    // ==========================================
+
+    /**
+     * Sets the global nether spawn point and saves to file.
+     */
+    public static void setNetherSpawn(MinecraftServer server, GlobalPos pos) {
+        if (data == null) load(server);
+
+        data.netherSpawn = HomeInfo.fromGlobalPos(pos);
+        save(server);
+    }
+
+    /**
+     * Retrieves the global nether spawn point.
+     */
+    public static GlobalPos getNetherSpawn(MinecraftServer server) {
+        if (data == null) load(server);
+
+        if (data != null && data.netherSpawn != null) {
+            return data.netherSpawn.toGlobalPos();
+        }
+        return null;
+    }
+
+    // ==========================================
+    // 4. End Spawn Methods
+    // ==========================================
+
+    /**
+     * Sets the global end spawn point and saves to file.
+     */
+    public static void setEndSpawn(MinecraftServer server, GlobalPos pos) {
+        if (data == null) load(server);
+
+        data.endSpawn = HomeInfo.fromGlobalPos(pos);
+        save(server);
+    }
+
+    /**
+     * Retrieves the global end spawn point.
+     */
+    public static GlobalPos getEndSpawn(MinecraftServer server) {
+        if (data == null) load(server);
+
+        if (data != null && data.endSpawn != null) {
+            return data.endSpawn.toGlobalPos();
+        }
+        return null;
     }
 
     // ==========================================

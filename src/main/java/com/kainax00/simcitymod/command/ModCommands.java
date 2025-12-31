@@ -141,7 +141,8 @@ public class ModCommands {
                 // 1-4. Set Spawn: /sim admin setspawn ...
                 .then(Commands.literal("setspawn")
                     .then(Commands.argument("type", StringArgumentType.word())
-                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "home"}, builder))
+                        // Added "nether", "end" to suggestions
+                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "home", "nether", "end"}, builder))
                         .executes(context -> {
                             ServerPlayer player = context.getSource().getPlayerOrException();
                             String type = StringArgumentType.getString(context, "type");
@@ -172,6 +173,28 @@ public class ModCommands {
                                     Component.translatable("message.simcitymod.setspawn_home_success"), true);
                                 return Command.SINGLE_SUCCESS;
                                 
+                            } else if (type.equals("nether")) {
+                                if (currentDimension != Level.NETHER) {
+                                    context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_nether_nether_only"));
+                                    return 0;
+                                }
+
+                                ServerSpawnData.setNetherSpawn(server, currentPos);
+                                context.getSource().sendSuccess(() -> 
+                                    Component.translatable("message.simcitymod.setspawn_nether_success"), true);
+                                return Command.SINGLE_SUCCESS;
+
+                            } else if (type.equals("end")) {
+                                if (currentDimension != Level.END) {
+                                    context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_end_end_only"));
+                                    return 0;
+                                }
+
+                                ServerSpawnData.setEndSpawn(server, currentPos);
+                                context.getSource().sendSuccess(() -> 
+                                    Component.translatable("message.simcitymod.setspawn_end_success"), true);
+                                return Command.SINGLE_SUCCESS;
+
                             } else {
                                 context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_invalid"));
                                 return 0;
