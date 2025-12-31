@@ -44,12 +44,18 @@ public class ModCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
-        // 1. /sim command group (Admin only)
+        // Root command: /sim
         dispatcher.register(Commands.literal("sim")
-            .requires(source -> PermissionUtil.hasAdminPermission(source))
 
-            // permission management command
+            // -----------------------------------------------------
+            // 1. ADMIN GROUP: All commands under here require admin
+            // Structure: /sim admin [tp|chunk|setspawn|maintenance|<player>...]
+            // -----------------------------------------------------
             .then(Commands.literal("admin")
+                .requires(source -> PermissionUtil.hasAdminPermission(source))
+
+                // 1-1. Permission Management: /sim admin <target> <level>
+                // (Arguments sit alongside literals; valid in Brigadier)
                 .then(Commands.argument("target", EntityArgument.player())
                     .then(Commands.argument("level", IntegerArgumentType.integer(0))
                         .executes(context -> {
@@ -63,7 +69,6 @@ public class ModCommands {
                             info.setPermissionLevel(newLevel);
                             PlayerDataManager.saveAll(context.getSource().getServer());
                             
-                            // Modified to use translation key
                             context.getSource().sendSuccess(() -> Component.translatable(
                                 "message.simcitymod.admin_set_success", 
                                 target.getName().getString(), 
@@ -72,160 +77,157 @@ public class ModCommands {
                         })
                     )
                 )
-            )
 
-            // transport command group
-            .then(Commands.literal("tp")
-                .then(Commands.literal("wild")
-                    .executes(context -> {
-                        ServerPlayer player = context.getSource().getPlayerOrException();
-                        if (TeleportManager.teleportToWild(player)) {
-                            return Command.SINGLE_SUCCESS;
-                        }
-                        return 0;
-                    })
-                )
-                .then(Commands.literal("home")
-                    .executes(context -> {
-                        ServerPlayer player = context.getSource().getPlayerOrException();
-                        if (TeleportManager.teleportToHome(player)) {
-                            return Command.SINGLE_SUCCESS;
-                        }
-                        return 0;
-                    })
-                )
-            )
-
-            // chunk command group
-            .then(Commands.literal("chunk")
-                .then(Commands.literal("settype")
-                    .then(Commands.argument("type", StringArgumentType.word())
-                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(
-                            Arrays.stream(ChunkType.values()).map(Enum::name).collect(Collectors.toList()), 
-                            builder
-                        ))
-                        .executes(ChunkCommandExecutor::setChunkType)
-                    )
-                )
-                .then(Commands.literal("setsquare")
-                    .then(Commands.argument("radius", IntegerArgumentType.integer(0, 32))
-                        .then(Commands.argument("type", StringArgumentType.word())
-                            .suggests((context, builder) -> SharedSuggestionProvider.suggest(
-                                Arrays.stream(ChunkType.values()).map(Enum::name).collect(Collectors.toList()), 
-                                builder
-                            ))
-                            .executes(ChunkCommandExecutor::setChunkSquare)
-                        )
-                    )
-                )
-                .then(Commands.literal("setcircle")
-                    .then(Commands.argument("radius", IntegerArgumentType.integer(0, 32))
-                        .then(Commands.argument("type", StringArgumentType.word())
-                            .suggests((context, builder) -> SharedSuggestionProvider.suggest(
-                                Arrays.stream(ChunkType.values()).map(Enum::name).collect(Collectors.toList()), 
-                                builder
-                            ))
-                            .executes(ChunkCommandExecutor::setChunkCircle)
-                        )
-                    )
-                )
-                .then(Commands.literal("info")
-                    .executes(ChunkCommandExecutor::showChunkInfo)
-                )
-            )
-
-            /// set spawn point command group
-            .then(Commands.literal("setspawn")
-                .then(Commands.argument("type", StringArgumentType.word())
-                    .suggests((context, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "home"}, builder))
-                    .executes(context -> {
-                        ServerPlayer player = context.getSource().getPlayerOrException();
-                        String type = StringArgumentType.getString(context, "type");
-
-                        ResourceKey<Level> currentDimension = player.level().dimension();
-                        GlobalPos currentPos = GlobalPos.of(currentDimension, player.blockPosition());
-                        MinecraftServer server = context.getSource().getServer();
-
-                        if (type.equals("wild")) {
-                            if (currentDimension != Level.OVERWORLD) {
-                                context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_wild_overworld_only"));
-                                return 0;
-                            }
-                            
-                            ServerSpawnData.setWildSpawn(server, currentPos);
-                            context.getSource().sendSuccess(() -> 
-                                Component.translatable("message.simcitymod.setspawn_wild_success"), true);
-                            return Command.SINGLE_SUCCESS;
-                            
-                        } else if (type.equals("home")) {
-                            if (currentDimension != Level.OVERWORLD) {
-                                context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_home_non_overworld_only"));
-                                return 0;
-                            }
-                            
-                            ServerSpawnData.setHomeSpawn(server, currentPos);
-                            context.getSource().sendSuccess(() -> 
-                                Component.translatable("message.simcitymod.setspawn_home_success"), true);
-                            return Command.SINGLE_SUCCESS;
-                            
-                        } else {
-                            context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_invalid"));
-                            return 0;
-                        }
-                    })
-                )
-            )
-
-            // Maintenance command group (Terrain Reset)
-            .then(Commands.literal("maintenance")
-                .then(Commands.literal("reset")
-                    .then(Commands.argument("type", StringArgumentType.word())
-                        // Suggesting types: wild, nether, end
-                        .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "nether", "end"}, builder))
-                        .executes(context -> MaintenanceManager.executeReset(
-                            context, StringArgumentType.getString(context, "type"), null))
-                        .then(Commands.argument("seed", LongArgumentType.longArg())
-                            .executes(context -> MaintenanceManager.executeReset(
-                                context, 
-                                StringArgumentType.getString(context, "type"), 
-                                LongArgumentType.getLong(context, "seed")))
-                        )
-                    )
-                )
-
-                // use: /sim maintenance pregen
-                .then(Commands.literal("pregen")
-                    .executes(context -> {
-                        ServerLevel level = context.getSource().getLevel();
-                        ChunkPreGenerator.startPreGeneration(level);
-                        context.getSource().sendSuccess(() -> 
-                        Component.translatable("message.simcitymod.pregen_start"), 
-                        true);
-                        return Command.SINGLE_SUCCESS;
-                    })
-                    .then(Commands.literal("stop")
+                // 1-2. Teleport Group: /sim admin tp <wild|home>
+                .then(Commands.literal("tp")
+                    .then(Commands.literal("wild")
                         .executes(context -> {
-                            ChunkPreGenerator.stopPreGeneration();
-                            context.getSource().sendSuccess(() -> 
-                            Component.translatable("message.simcitymod.pregen_stop_requested"), 
-                            true);
-                            return Command.SINGLE_SUCCESS;
+                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            if (TeleportManager.teleportToWild(player)) {
+                                return Command.SINGLE_SUCCESS;
+                            }
+                            return 0;
+                        })
+                    )
+                    .then(Commands.literal("home")
+                        .executes(context -> {
+                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            if (TeleportManager.teleportToHome(player)) {
+                                return Command.SINGLE_SUCCESS;
+                            }
+                            return 0;
                         })
                     )
                 )
+
+                // 1-3. Chunk Management: /sim admin chunk ...
+                .then(Commands.literal("chunk")
+                    .then(Commands.literal("settype")
+                        .then(Commands.argument("type", StringArgumentType.word())
+                            .suggests((context, builder) -> SharedSuggestionProvider.suggest(
+                                Arrays.stream(ChunkType.values()).map(Enum::name).collect(Collectors.toList()), 
+                                builder
+                            ))
+                            .executes(ChunkCommandExecutor::setChunkType)
+                        )
+                    )
+                    .then(Commands.literal("setsquare")
+                        .then(Commands.argument("radius", IntegerArgumentType.integer(0, 32))
+                            .then(Commands.argument("type", StringArgumentType.word())
+                                .suggests((context, builder) -> SharedSuggestionProvider.suggest(
+                                    Arrays.stream(ChunkType.values()).map(Enum::name).collect(Collectors.toList()), 
+                                    builder
+                                ))
+                                .executes(ChunkCommandExecutor::setChunkSquare)
+                            )
+                        )
+                    )
+                    .then(Commands.literal("setcircle")
+                        .then(Commands.argument("radius", IntegerArgumentType.integer(0, 32))
+                            .then(Commands.argument("type", StringArgumentType.word())
+                                .suggests((context, builder) -> SharedSuggestionProvider.suggest(
+                                    Arrays.stream(ChunkType.values()).map(Enum::name).collect(Collectors.toList()), 
+                                    builder
+                                ))
+                                .executes(ChunkCommandExecutor::setChunkCircle)
+                            )
+                        )
+                    )
+                    .then(Commands.literal("info")
+                        .executes(ChunkCommandExecutor::showChunkInfo)
+                    )
+                )
+
+                // 1-4. Set Spawn: /sim admin setspawn ...
+                .then(Commands.literal("setspawn")
+                    .then(Commands.argument("type", StringArgumentType.word())
+                        .suggests((context, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "home"}, builder))
+                        .executes(context -> {
+                            ServerPlayer player = context.getSource().getPlayerOrException();
+                            String type = StringArgumentType.getString(context, "type");
+
+                            ResourceKey<Level> currentDimension = player.level().dimension();
+                            GlobalPos currentPos = GlobalPos.of(currentDimension, player.blockPosition());
+                            MinecraftServer server = context.getSource().getServer();
+
+                            if (type.equals("wild")) {
+                                if (currentDimension != Level.OVERWORLD) {
+                                    context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_wild_overworld_only"));
+                                    return 0;
+                                }
+                                
+                                ServerSpawnData.setWildSpawn(server, currentPos);
+                                context.getSource().sendSuccess(() -> 
+                                    Component.translatable("message.simcitymod.setspawn_wild_success"), true);
+                                return Command.SINGLE_SUCCESS;
+                                
+                            } else if (type.equals("home")) {
+                                if (currentDimension != Level.OVERWORLD) {
+                                    context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_home_non_overworld_only"));
+                                    return 0;
+                                }
+                                
+                                ServerSpawnData.setHomeSpawn(server, currentPos);
+                                context.getSource().sendSuccess(() -> 
+                                    Component.translatable("message.simcitymod.setspawn_home_success"), true);
+                                return Command.SINGLE_SUCCESS;
+                                
+                            } else {
+                                context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_invalid"));
+                                return 0;
+                            }
+                        })
+                    )
+                )
+
+                // 1-5. Maintenance: /sim admin maintenance ...
+                .then(Commands.literal("maintenance")
+                    .then(Commands.literal("reset")
+                        .then(Commands.argument("type", StringArgumentType.word())
+                            .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(new String[]{"wild", "nether", "end"}, builder))
+                            .executes(context -> MaintenanceManager.executeReset(
+                                context, StringArgumentType.getString(context, "type"), null))
+                            .then(Commands.argument("seed", LongArgumentType.longArg())
+                                .executes(context -> MaintenanceManager.executeReset(
+                                    context, 
+                                    StringArgumentType.getString(context, "type"), 
+                                    LongArgumentType.getLong(context, "seed")))
+                            )
+                        )
+                    )
+                    .then(Commands.literal("pregen")
+                        .executes(context -> {
+                            ServerLevel level = context.getSource().getLevel();
+                            ChunkPreGenerator.startPreGeneration(level);
+                            context.getSource().sendSuccess(() -> 
+                            Component.translatable("message.simcitymod.pregen_start"), 
+                            true);
+                            return Command.SINGLE_SUCCESS;
+                        })
+                        .then(Commands.literal("stop")
+                            .executes(context -> {
+                                ChunkPreGenerator.stopPreGeneration();
+                                context.getSource().sendSuccess(() -> 
+                                Component.translatable("message.simcitymod.pregen_stop_requested"), 
+                                true);
+                                return Command.SINGLE_SUCCESS;
+                            })
+                        )
+                    )
+                )
+
+                // 1-6. Set Center: /sim admin setcenter
+                .then(Commands.literal("setcenter")
+                    .executes(WorldCommandExecutor::setWorldCenter)
+                )
             )
 
-            .then(Commands.literal("setcenter")
-                .executes(WorldCommandExecutor::setWorldCenter)
-            )
-            
-            // Add new command here
-        );
+            // -----------------------------------------------------
+            // 2. PUBLIC GROUP: Commands accessible by everyone
+            // -----------------------------------------------------
 
-        // /sc friend command group (All players)
-        dispatcher.register(Commands.literal("sc")
+            // 2-1. Friend Management: /sim friend ...
             .then(Commands.literal("friend")
-                // use: /sc friend add <player>
                 .then(Commands.literal("add")
                     .then(Commands.argument("target", EntityArgument.player())
                         .executes(context -> {
@@ -249,8 +251,6 @@ public class ModCommands {
                         })
                     )
                 )
-                
-                // use: /sc friend remove <player>
                 .then(Commands.literal("remove")
                     .then(Commands.argument("target", EntityArgument.player())
                         .executes(context -> {
@@ -271,7 +271,5 @@ public class ModCommands {
                 )
             )
         );
-
-
     }
 }
