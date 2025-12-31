@@ -1,36 +1,33 @@
+
 package com.kainax00.simcitymod.manager;
 
 import com.kainax00.simcitymod.SimcityMod;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * --------------------------------------------------------------------------------
- * [ PRE-GENERATION SYSTEM SPECIFICATION & PERFORMANCE GUIDE ]
- * --------------------------------------------------------------------------------
- * TARGET WORKLOAD: ~98,000 Chunks (5000 radius WorldBorder)
- * * 1. MEMORY (RAM) REQUIREMENTS:
- * - Recommended Allocation: -Xmx16G (Minimum -Xmx12G)
- * - Reason: Full chunk generation caches structural and lighting data. 
- * 16GB ensures the Garbage Collector (GC) runs smoothly without freezing the Main Thread.
- * * 2. ESTIMATED COMPLETION TIME (Based on current settings: 5 chunks / 50ms sleep):
- * - Total Sleep Time: ~16.3 Minutes
- * - Processing Time (i7-12700KF): ~15-20 Minutes
- * - Total Estimated: ~35-45 Minutes (Varies by SSD write speed and thermal throttling)
- * * 3. HARDWARE OPTIMIZATION:
- * - HIGH-END DESKTOP (i7-12700KF): Can handle 'count % 10 == 0 / Thread.sleep(20)' 
- * to finish in ~20 mins.
- * - LAPTOP (Ryzen 7 5800H): Current setting (5 chunks / 50ms) is optimal 
- * to prevent thermal throttling and system instability.
- * --------------------------------------------------------------------------------
+/*
+ * [ System Optimization Notes ]
+ * * Target Hardware: AMD Ryzen 7 5800H (8-Cores / 16-Threads), 32GB DDR4 RAM.
+ * * 1. CPU Utilization (5800H):
+ * - Increased the skipping threshold for pre-generated chunks to 200 cycles.
+ * - This reduces unnecessary thread yielding (Sleep) and leverages high multi-threaded performance.
+ * * 2. Memory Management (32GB RAM):
+ * - Chunk cleanup threshold is set to 25,000 loaded chunks.
+ * - Provides a balance between preventing server lag and utilizing the large 16GB-32GB allocated heap.
+ * - Manual System.gc() is triggered after deep cleaning cycles to maintain heap health.
+ * * 3. I/O Optimization:
+ * - saveAll() uses deferred flushing (flush=false) during active generation to minimize NVMe SSD write bottleneck.
  */
 public class ChunkPreGenerator {
     private static final AtomicBoolean isRunning = new AtomicBoolean(false);
     private static final AtomicBoolean stopRequested = new AtomicBoolean(false);
+
+    private static final int REGION_SIZE = 32;
 
     public static void startPreGeneration(ServerLevel level) {
         if (isRunning.get()) {
@@ -49,38 +46,82 @@ public class ChunkPreGenerator {
         stopRequested.set(false);
 
         String dimensionName = level.dimension().m_447358_().toString();
-        SimcityMod.LOGGER.info(">>> [SimCity] Balanced Pre-gen started: {} chunks in {}.", totalChunks, dimensionName);
+        SimcityMod.LOGGER.info(">>> [SimCity] HIGH-PERFORMANCE PRE-GEN STARTED: {} chunks in {}.", totalChunks, dimensionName);
 
         CompletableFuture.runAsync(() -> {
             try {
                 int count = 0;
-                for (int x = minX; x <= maxX; x++) {
-                    for (int z = minZ; z <= maxZ; z++) {
+                int skippedInBatch = 0;
+                long lastTime = System.currentTimeMillis();
+                var chunkSource = level.getChunkSource();
+
+                for (int rX = minX; rX <= maxX; rX += REGION_SIZE) {
+                    for (int rZ = minZ; rZ <= maxZ; rZ += REGION_SIZE) {
+                        
                         if (stopRequested.get()) {
-                            SimcityMod.LOGGER.info(">>> [SimCity] Pre-generation stopped by administrator.");
+                            saveAll(level, true);
+                            SimcityMod.LOGGER.info(">>> [SimCity] Stopped by user.");
                             return;
                         }
 
-                        // Generate the chunk up to FULL status (includes lighting, structures, and mobs)
-                        level.getChunkSource().getChunk(x, z, ChunkStatus.FULL, true);
-                        count++;
+                        int limitX = Math.min(rX + REGION_SIZE, maxX + 1);
+                        int limitZ = Math.min(rZ + REGION_SIZE, maxZ + 1);
 
-                        // THROTTLING LOGIC: Optimized for Ryzen 5800H & i7-12700KF Compatibility
-                        // Prevents "Can't keep up" skips by yielding the main thread frequently.
-                        if (count % 5 == 0) {
-                            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
+                        for (int x = rX; x < limitX; x++) {
+                            for (int z = rZ; z < limitZ; z++) {
+                                
+                                if (stopRequested.get()) return;
 
-                            if (count % 1000 == 0) {
-                                final int currentCount = count;
-                                SimcityMod.LOGGER.info(">>> [SimCity] Progress: {}/{} ({}%)", 
-                                    currentCount, totalChunks, (currentCount * 100 / totalChunks));
+                                final int cx = x;
+                                final int cz = z;
+
+                                boolean isNewGen = level.getServer().submit(() -> {
+                                    ChunkAccess chunk = chunkSource.getChunk(cx, cz, ChunkStatus.EMPTY, true);
+                                    if (chunk != null && chunk.getPersistedStatus().isOrAfter(ChunkStatus.FULL)) {
+                                        return false;
+                                    }
+                                    chunkSource.getChunk(cx, cz, ChunkStatus.FULL, true);
+                                    return true;
+                                }).join();
+
+                                if (!isNewGen) skippedInBatch++;
+                                count++;
+
+                                if (!isNewGen && count % 200 == 0) {
+                                     try { Thread.sleep(1); } catch (Exception e) {}
+                                }
+
+                                if (count % 2000 == 0) {
+                                    long currentTime = System.currentTimeMillis();
+                                    double timeSeconds = (currentTime - lastTime) / 1000.0;
+                                    double cps = 2000.0 / Math.max(0.1, timeSeconds);
+                                    double progressPercent = ((double) count / totalChunks) * 100.0;
+                                    
+                                    Runtime rt = Runtime.getRuntime();
+                                    long usedMemMB = (rt.totalMemory() - rt.freeMemory()) / 1024 / 1024;
+                                    int loadedChunks = chunkSource.getLoadedChunksCount();
+
+                                    String statusMode = (skippedInBatch > 1900) ? "FAST-SKIPPING" : "GENERATING";
+
+                                    SimcityMod.LOGGER.info(String.format(
+                                        ">>> [SimCity] %s | %d/%d (%.2f%%) | Speed: %.1f ch/s | RAM: %d MB | Loaded: %d",
+                                        statusMode, count, totalChunks, progressPercent, 
+                                        cps, usedMemMB, loadedChunks
+                                    ));
+
+                                    lastTime = currentTime;
+                                    skippedInBatch = 0;
+                                }
                             }
-                        }
+                        } 
+
+                        performDeepCleanCycle(level, chunkSource);
                     }
-                }
-                SimcityMod.LOGGER.info(">>> [SimCity] Pre-generation successfully completed!");
+                } 
+                
+                SimcityMod.LOGGER.info(">>> [SimCity] ALL DONE! Dimension {} is fully pre-generated.", dimensionName);
             } catch (Exception e) {
-                SimcityMod.LOGGER.error(">>> [SimCity] Critical Error during pre-gen: ", e);
+                SimcityMod.LOGGER.error(">>> [SimCity] Fatal error during pre-generation: ", e);
             } finally {
                 isRunning.set(false);
                 stopRequested.set(false);
@@ -90,5 +131,28 @@ public class ChunkPreGenerator {
 
     public static void stopPreGeneration() {
         if (isRunning.get()) stopRequested.set(true);
+    }
+
+    private static void saveAll(ServerLevel level, boolean flush) {
+        level.getServer().submit(() -> level.getChunkSource().save(flush)).join();
+    }
+
+    private static void performDeepCleanCycle(ServerLevel level, net.minecraft.server.level.ServerChunkCache chunkSource) {
+        saveAll(level, false);
+
+        if (chunkSource.getLoadedChunksCount() > 25000) {
+            SimcityMod.LOGGER.info(">>> [SimCity] [CLEANER] High chunk count detected ({}), purging memory...", chunkSource.getLoadedChunksCount());
+
+            for (int i = 0; i < 3; i++) {
+                level.getServer().submit(() -> {
+                    chunkSource.tick(() -> true, false); 
+                });
+                try { Thread.sleep(100); } catch (Exception e) {}
+            }
+
+            System.gc();
+            
+            SimcityMod.LOGGER.info(">>> [SimCity] [CLEANER] Cleanup finished. Loaded Chunks: " + chunkSource.getLoadedChunksCount());
+        }
     }
 }
