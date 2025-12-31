@@ -31,15 +31,13 @@ public class DynamicDimensionManager {
             Path dimensionDir = datapackDir.resolve("data").resolve("simcitymod").resolve("dimension");
             if (!Files.exists(dimensionDir)) Files.createDirectories(dimensionDir);
 
-            // 구버전 폴더 백업 (초기화 핵심)
             archiveWorldFolder(server, dimName);
 
             File metaFile = datapackDir.resolve("pack.mcmeta").toFile();
             if (!metaFile.exists()) createPackMeta(metaFile);
 
             long seed = (customSeed != null) ? customSeed : new Random().nextLong();
-            
-            // 가장 안전한 바닐라 설정으로 생성
+
             createDimensionJson(dimensionDir.resolve(dimName + ".json").toFile(), type, seed);
 
             SimcityMod.LOGGER.info("Scheduled NEW dimension: " + dimName);
@@ -75,21 +73,29 @@ public class DynamicDimensionManager {
 
     private static void createDimensionJson(File file, SimDimensionType type, long seed) throws IOException {
         JsonObject root = new JsonObject();
-        root.addProperty("type", type.getDimensionType()); // minecraft:overworld 등
+        root.addProperty("type", type.getDimensionType());
 
         JsonObject generator = new JsonObject();
         generator.addProperty("type", "minecraft:noise");
         generator.addProperty("seed", seed);
-        generator.addProperty("settings", type.getGeneratorSettings()); // minecraft:overworld
+        generator.addProperty("settings", type.getGeneratorSettings()); 
 
-        // [핵심] 순정 프리셋 사용. 튕김 없음.
         JsonObject biomeSource = new JsonObject();
-        biomeSource.addProperty("type", "minecraft:multi_noise");
-        biomeSource.addProperty("preset", type.getGeneratorSettings()); // minecraft:overworld
-        
+
+        if (type == SimDimensionType.END) {
+            biomeSource.addProperty("type", "minecraft:the_end");
+            biomeSource.addProperty("seed", seed); 
+            
+        } else {
+            biomeSource.addProperty("type", "minecraft:multi_noise");
+            biomeSource.addProperty("preset", type.getGeneratorSettings());
+        }
+
         generator.add("biome_source", biomeSource);
         root.add("generator", generator);
 
-        try (FileWriter writer = new FileWriter(file)) { GSON.toJson(root, writer); }
+        try (FileWriter writer = new FileWriter(file)) {
+            GSON.toJson(root, writer);
+        }
     }
 }

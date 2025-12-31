@@ -1,11 +1,13 @@
 package com.kainax00.simcitymod.data.info;
 
+import com.kainax00.simcitymod.data.enums.SimDimensionType;
 import com.kainax00.simcitymod.util.IdentifierUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import javax.annotation.Nullable;
 
 /**
  * HomeInfo stores dimension and coordinate data for serialization.
@@ -26,16 +28,31 @@ public class HomeInfo {
 
     /**
      * Converts a Minecraft GlobalPos to a HomeInfo object.
+     * <p>
+     * If the dimension belongs to a SimCity custom dimension, this method returns null
+     * to prevent setting spawn points in those dimensions.
+     * </p>
+     *
      * * Note on Obfuscation:
      * In this environment, ResourceKey uses obfuscated names.
      * - f_435021_: The Identifier field (location).
      * - m_447358_(): The getter method that returns f_435021_.
      * We use m_447358_() to retrieve the clean dimension ID (e.g., "minecraft:overworld").
+     *
+     * @param pos The GlobalPos to convert
+     * @return A new HomeInfo instance, or null if the dimension is restricted
      */
+    @Nullable
     public static HomeInfo fromGlobalPos(GlobalPos pos) {
         // m_447358_() returns the Identifier (location) of the ResourceKey
         String dim = pos.dimension().m_447358_().toString();
-        
+
+        // Check if the dimension ID belongs to SimCity custom dimensions.
+        // If it does, we return null to disallow setting spawn points here.
+        if (SimDimensionType.isSimCityDimension(dim)) {
+            return null;
+        }
+
         BlockPos p = pos.pos();
         return new HomeInfo(dim, p.getX(), p.getY(), p.getZ());
     }
@@ -49,14 +66,14 @@ public class HomeInfo {
 
         // Reconstruct the Identifier (ResourceLocation)
         // Defaults to minecraft:overworld if the stored string is invalid
-        var location = (parts.length == 2) 
-            ? IdentifierUtil.create(parts[0], parts[1]) 
+        var location = (parts.length == 2)
+            ? IdentifierUtil.create(parts[0], parts[1])
             : IdentifierUtil.create("minecraft", "overworld");
 
         // Create the ResourceKey for the dimension
         ResourceKey<Level> dimKey = ResourceKey.create(Registries.DIMENSION, location);
         BlockPos pos = new BlockPos(this.x, this.y, this.z);
-        
+
         return GlobalPos.of(dimKey, pos);
     }
 

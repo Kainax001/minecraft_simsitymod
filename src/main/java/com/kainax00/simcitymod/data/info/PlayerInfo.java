@@ -22,13 +22,15 @@ public class PlayerInfo {
     private List<Long> claimedChunks;
     private PermissionLevel permissionLevel;
 
+    private boolean canEnterNether;
+    private boolean canEnterEnd;
+
     public PlayerInfo(UUID uuid, String playerName) {
         this.uuid = uuid;
         this.playerName = playerName;
         this.friends = new HashSet<>();
         this.bonusLimit = 0;
 
-        // [로직 수정] 초기 생성 시 Config 값을 가져와서 base와 max를 설정
         int currentBase = 4;
         if (Config.MAX_CLAIMS_PER_PLAYER != null) {
             currentBase = Config.MAX_CLAIMS_PER_PLAYER.get();
@@ -40,6 +42,9 @@ public class PlayerInfo {
         this.claimedCount = 0;
         this.claimedChunks = new ArrayList<>();
         this.permissionLevel = PermissionLevel.NONE;
+
+        this.canEnterNether = false;
+        this.canEnterEnd = false;
     }
 
     // ==========================================
@@ -89,4 +94,10 @@ public class PlayerInfo {
         return permissionLevel;
     }
     public void setPermissionLevel(PermissionLevel permissionLevel) { this.permissionLevel = permissionLevel; }
+
+    public boolean canEnterNether() { return canEnterNether; }
+    public void setCanEnterNether(boolean canEnterNether) { this.canEnterNether = canEnterNether; }
+
+    public boolean canEnterEnd() { return canEnterEnd; }
+    public void setCanEnterEnd(boolean canEnterEnd) { this.canEnterEnd = canEnterEnd; }
 }
