@@ -8,6 +8,7 @@
   "item.simcitymod.chunk_limit_increase": "청크 제한 증가권",
   "item.simcitymod.nether_permit": "네더 통행증",
   "item.simcitymod.end_permit": "엔더 통행증",
+  "block.simcitymod.wilderness_teleporter": "야생 이동 장치",
 
   "item.simcitymod.permit.already_has": "§c이미 해당 차원의 출입 권한을 가지고 있습니다.",
   "item.simcitymod.permit.nether_success": "§a[SimCity] 네더 출입 권한이 승인되었습니다!",

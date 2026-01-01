@@ -8,6 +8,7 @@ import com.kainax00.simcitymod.item.DimensionPermitItem;
 import com.kainax00.simcitymod.item.ReturnScrollItem;
 import com.kainax00.simcitymod.item.TraderSpawnEggItem;
 
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.registries.DeferredRegister;
@@ -75,6 +76,14 @@ public class ModItems {
                 .setId(ITEMS.key("end_permit"))
                 .stacksTo(1), 
                 "end"
+            )
+    );
+
+    public static final RegistryObject<Item> WILDERNESS_TELEPORTER_ITEM = ITEMS.register("wilderness_teleporter",
+            () -> new BlockItem(
+                ModBlocks.WILDERNESS_TELEPORTER.get(),
+                new Item.Properties()
+                    .setId(ITEMS.key("wilderness_teleporter"))
             )
     );
 

@@ -6,6 +6,7 @@ import com.kainax00.simcitymod.config.TradeConfig;
 import com.kainax00.simcitymod.event.ClaimProtectionHandler;
 import com.kainax00.simcitymod.manager.PlayerDataManager;
 import com.kainax00.simcitymod.registry.ModItems;
+import com.kainax00.simcitymod.registry.ModBlocks;
 import com.kainax00.simcitymod.registry.ModEntities;
 
 import com.mojang.logging.LogUtils;
@@ -34,6 +35,7 @@ public final class SimcityMod {
 
         ModItems.ITEMS.register(modBusGroup);
         ModEntities.ENTITIES.register(modBusGroup);
+        ModBlocks.BLOCKS.register(modBusGroup);
 
         // Register the commonSetup method for modloading
         FMLCommonSetupEvent.getBus(modBusGroup).addListener(this::commonSetup);
@@ -48,7 +50,7 @@ public final class SimcityMod {
         // chunk protection event
         MinecraftForge.EVENT_BUS.register(ClaimProtectionHandler.class);
 
-        MinecraftForge.EVENT_BUS.register(ClaimProtectionHandler.class);
+        // player data event
         MinecraftForge.EVENT_BUS.register(PlayerDataManager.class);
     }
 
@@ -61,6 +63,8 @@ public final class SimcityMod {
     // Add the example block item to the building blocks tab
     private static void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
+
+            //item
             event.accept(ModItems.CHUNK_CLAIMER.get()); 
             event.accept(ModItems.CHUNK_UNCLAIMER.get());
             event.accept(ModItems.TRADER_SPAWN_EGG.get());
@@ -68,6 +72,9 @@ public final class SimcityMod {
             event.accept(ModItems.CHUNK_LIMIT_INCREASE_ITEM.get());
             event.accept(ModItems.END_PERMIT.get());
             event.accept(ModItems.NETHER_PERMIT.get());
+
+            // block
+            event.accept(ModItems.WILDERNESS_TELEPORTER_ITEM.get());
         }
     }
 

@@ -8,6 +8,7 @@
   "item.simcitymod.chunk_limit_increase": "Chunk Limit Increase Ticket",
   "item.simcitymod.nether_permit": "Nether Permit",
   "item.simcitymod.end_permit": "End Permit",
+  "block.simcitymod.wilderness_teleporter": "Wilderness Teleporter",
 
   "item.simcitymod.permit.already_has": "§cYou already have permission to enter this dimension.",
   "item.simcitymod.permit.nether_success": "§a[SimCity] Nether access permission granted!",
