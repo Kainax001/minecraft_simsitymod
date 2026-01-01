@@ -5,6 +5,13 @@
   "item.simcitymod.chunk_limit_increase_item": "Chunk Limit Increase Ticket",
   "item.simcitymod.return_scroll": "Return Scroll",
   "entity.simcitymod.trader": "Trader",
+  "item.simcitymod.chunk_limit_increase": "Chunk Limit Increase Ticket",
+  "item.simcitymod.nether_permit": "Nether Permit",
+  "item.simcitymod.end_permit": "End Permit",
+
+  "item.simcitymod.permit.already_has": "§cYou already have permission to enter this dimension.",
+  "item.simcitymod.permit.nether_success": "§a[SimCity] Nether access permission granted!",
+  "item.simcitymod.permit.end_success": "§d[SimCity] End access permission granted!",
 
   "message.simcitymod.chunk_claimed_success": "§aChunk successfully claimed! (%s/%s)",
   "message.simcitymod.chunk_already_owned": "§cYou already own this chunk.",
@@ -39,6 +46,12 @@
   "message.simcitymod.teleport_end_success": "§dTeleported to the End world!",
   "message.simcitymod.nether_load_error": "§c[SimCity] Cannot load the Nether dimension.",
   "message.simcitymod.end_load_error": "§c[SimCity] Cannot load the End dimension.",
+  "simcitymod.message.return_home": "§a[SimCity] You have safely returned Home.",
+  "simcitymod.message.return_nether_spawn": "§a[SimCity] Teleported to the Nether set spawn.",
+  "simcitymod.message.no_permission": "§c[SimCity] You do not have permission to enter this dimension.",
+  "simcitymod.message.moving_to_home": "§7Teleporting to your designated Home.",
+  "simcitymod.message.enter_nether": "§a[SimCity] Arrived at the Nether Outpost.",
+  "simcitymod.message.enter_end_purified": "§d[SimCity] The End has been purified. Moving to the Outpost.",
   "message.simcitymod.setspawn_invalid": "§cInvalid spawn type. (Use: wild | home | end | nether)",
 
   "message.simcitymod.admin_set_success": "§aPermission for %s has been set to §e%s§a.",
@@ -70,5 +83,11 @@
   "message.simcitymod.friend_not_found": "This player is not in your friend list.",
 
   "message.simcitymod.pregen_start": "§a[SimCity] Starting pre-generation for current dimension chunks. Check server logs for progress.",
-  "message.simcitymod.pregen_stop_requested": "§c[SimCity] Chunk pre-generation stop requested."
+  "message.simcitymod.pregen_stop_requested": "§c[SimCity] Chunk pre-generation stop requested.",
+
+  "message.simcitymod.reset_dragon_success": "§a[SimCity] Dragon kill status has been reset. (Vanilla spawn applied)",
+  "message.simcitymod.reset_dragon_fail_no_end": "§c[SimCity] Unable to load The End world.",
+  "message.simcitymod.reset_dragon_fail_no_fight": "§c[SimCity] Dragon fight data not found.",
+  "message.simcitymod.reset_dragon_fail_field": "§c[SimCity] Internal field access failed (dragonKilled field not found).",
+  "message.simcitymod.reset_dragon_fail_error": "§c[SimCity] Error during reset: %s"
 }

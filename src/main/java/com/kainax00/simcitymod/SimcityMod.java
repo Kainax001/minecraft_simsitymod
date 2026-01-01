@@ -66,6 +66,8 @@ public final class SimcityMod {
             event.accept(ModItems.TRADER_SPAWN_EGG.get());
             event.accept(ModItems.RETURN_SCROLL.get());
             event.accept(ModItems.CHUNK_LIMIT_INCREASE_ITEM.get());
+            event.accept(ModItems.END_PERMIT.get());
+            event.accept(ModItems.NETHER_PERMIT.get());
         }
     }
 

@@ -125,51 +125,52 @@ public class TeleportManager {
     }
 
     // =================================================================================
-    // 3. END Teleport Logic
+    // 3. END Teleport Logic (Integrated)
     // =================================================================================
 
     public static boolean teleportToEnd(ServerPlayer player) {
         MinecraftServer server = player.level().getServer();
         GlobalPos savedPos = ServerSpawnData.getEndSpawn(server);
 
-        ServerLevel targetLevel;
-        double targetX, targetY, targetZ;
+        ServerLevel targetLevel = null;
+        double targetX = 0, targetY = 0, targetZ = 0;
+        boolean useFallback = false;
 
         if (savedPos != null) {
             targetLevel = server.getLevel(savedPos.dimension());
             if (targetLevel == null) {
                 player.displayClientMessage(Component.translatable("message.simcitymod.end_not_found_default"), false);
-                return teleportToLatestEnd(player, server);
+                useFallback = true;
+            } else {
+                targetX = savedPos.pos().getX() + 0.5;
+                targetY = savedPos.pos().getY();
+                targetZ = savedPos.pos().getZ() + 0.5;
             }
-            targetX = savedPos.pos().getX() + 0.5;
-            targetY = savedPos.pos().getY();
-            targetZ = savedPos.pos().getZ() + 0.5;
         } else {
             player.displayClientMessage(Component.translatable("message.simcitymod.end_not_set_default"), false);
-            return teleportToLatestEnd(player, server);
+            useFallback = true;
+        }
+
+        if (useFallback) {
+            targetLevel = server.getLevel(Level.END);
+            if (targetLevel == null) return false;
+
+            targetX = 0.5;
+            targetZ = 0.5;
+
+            targetLevel.getChunkSource().getChunk(0, 0, ChunkStatus.FULL, true);
+            targetY = targetLevel.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, 0, 0);
+            
+            if (targetY < targetLevel.getMinY()) targetY = 60;
+            targetY += 1;
         }
 
         player.teleportTo(targetLevel, targetX, targetY, targetZ, Set.of(), player.getYRot(), player.getXRot(), true);
-        player.displayClientMessage(Component.translatable("message.simcitymod.teleport_end_success"), true);
-        return true;
-    }
 
-    private static boolean teleportToLatestEnd(ServerPlayer player, MinecraftServer server) {
-        int version = MaintenanceData.getCurrentVersion(server, SimDimensionType.END);
-        String dimName = SimDimensionType.END.getIdPrefix() + "_v" + version;
-        ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, IdentifierUtil.create("simcitymod", dimName));
-        ServerLevel targetLevel = server.getLevel(key);
-
-        if (targetLevel == null) return false;
-
-        double targetX = 0.5;
-        double targetZ = 0.5;
-        targetLevel.getChunkSource().getChunk(0, 0, ChunkStatus.FULL, true);
-        double targetY = targetLevel.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, 0, 0);
-        if (targetY < targetLevel.getMinY()) targetY = 60;
-        targetY += 1;
-
-        player.teleportTo(targetLevel, targetX, targetY, targetZ, Set.of(), player.getYRot(), player.getXRot(), true);
+        if (!useFallback) {
+            player.displayClientMessage(Component.translatable("message.simcitymod.teleport_end_success"), true);
+        }
+        
         return true;
     }
 

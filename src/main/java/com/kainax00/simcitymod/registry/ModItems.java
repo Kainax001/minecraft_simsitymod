@@ -4,6 +4,7 @@ import com.kainax00.simcitymod.SimcityMod;
 import com.kainax00.simcitymod.item.ChunkClaimItem;
 import com.kainax00.simcitymod.item.ChunkLimitIncreaseItem;
 import com.kainax00.simcitymod.item.ChunkUnclaimItem;
+import com.kainax00.simcitymod.item.DimensionPermitItem;
 import com.kainax00.simcitymod.item.ReturnScrollItem;
 import com.kainax00.simcitymod.item.TraderSpawnEggItem;
 
@@ -57,6 +58,24 @@ public class ModItems {
                 .setId(ITEMS.key("return_scroll"))
                 .stacksTo(16)
         )
+    );
+    
+    public static final RegistryObject<Item> NETHER_PERMIT = ITEMS.register("nether_permit",
+            () -> new DimensionPermitItem(
+                new Item.Properties()
+                .setId(ITEMS.key("nether_permit"))
+                .stacksTo(1), 
+                "nether"
+            )
+    );
+
+    public static final RegistryObject<Item> END_PERMIT = ITEMS.register("end_permit",
+            () -> new DimensionPermitItem(
+                new Item.Properties()
+                .setId(ITEMS.key("end_permit"))
+                .stacksTo(1), 
+                "end"
+            )
     );
 
     public static void register(BusGroup bus) {

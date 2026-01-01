@@ -5,6 +5,13 @@
   "item.simcitymod.chunk_limit_increase_item": "청크점유한도 증가 티켓",
   "item.simcitymod.return_scroll": "귀환 주문서",
   "entity.simcitymod.trader": "상인",
+  "item.simcitymod.chunk_limit_increase": "청크 제한 증가권",
+  "item.simcitymod.nether_permit": "네더 통행증",
+  "item.simcitymod.end_permit": "엔더 통행증",
+
+  "item.simcitymod.permit.already_has": "§c이미 해당 차원의 출입 권한을 가지고 있습니다.",
+  "item.simcitymod.permit.nether_success": "§a[SimCity] 네더 출입 권한이 승인되었습니다!",
+  "item.simcitymod.permit.end_success": "§d[SimCity] 엔더 출입 권한이 승인되었습니다!",
 
   "message.simcitymod.chunk_claimed_success": "§a청크가 성공적으로 점유되었습니다! (%s/%s)",
   "message.simcitymod.chunk_already_owned": "§c당신은 이미 이 청크를 소유하고 있습니다.",
@@ -39,6 +46,12 @@
   "message.simcitymod.teleport_end_success": "§d엔더 월드로 이동했습니다!",
   "message.simcitymod.nether_load_error": "§c[SimCity] 네더 차원을 불러올 수 없습니다.",
   "message.simcitymod.end_load_error": "§c[SimCity] 엔더 차원을 불러올 수 없습니다.",
+  "simcitymod.message.return_home": "§a[SimCity] 집(Home)으로 무사히 귀환했습니다.",
+  "simcitymod.message.return_nether_spawn": "§a[SimCity] 네더 셋스폰 위치로 이동했습니다.",
+  "simcitymod.message.no_permission": "§c[SimCity] 해당 차원 진입 권한이 없습니다.",
+  "simcitymod.message.moving_to_home": "§7지정된 홈 위치로 이동합니다.",
+  "simcitymod.message.enter_nether": "§a[SimCity] 네더 전초기지로 이동했습니다.",
+  "simcitymod.message.enter_end_purified": "§d[SimCity] 엔더가 정화되어 전초기지로 이동합니다.",
   "message.simcitymod.setspawn_invalid": "§c잘못된 스폰 타입입니다. (wild | home | end | nether 사용)",
 
   "message.simcitymod.admin_set_success": "§a%s님의 권한이 §e%s§a(으)로 설정되었습니다.",
@@ -70,5 +83,11 @@
   "message.simcitymod.friend_not_found": "친구 목록에 해당 플레이어가 없습니다.",
 
   "message.simcitymod.pregen_start": "§a[SimCity] 현재 차원의 청크 사전 생성을 시작합니다. 진행 상황은 서버 로그를 확인하세요.",
-  "message.simcitymod.pregen_stop_requested": "§c[SimCity] 청크 사전 생성 중단을 요청했습니다."
+  "message.simcitymod.pregen_stop_requested": "§c[SimCity] 청크 사전 생성 중단을 요청했습니다.",
+
+  "message.simcitymod.reset_dragon_success": "§a[SimCity] 드래곤 처치 여부가 초기화되었습니다. (바닐라 스폰 적용)",
+  "message.simcitymod.reset_dragon_fail_no_end": "§c[SimCity] 엔더 월드를 로드할 수 없습니다.",
+  "message.simcitymod.reset_dragon_fail_no_fight": "§c[SimCity] 드래곤 전투 데이터를 찾을 수 없습니다.",
+  "message.simcitymod.reset_dragon_fail_field": "§c[SimCity] 내부 필드 접근 실패 (dragonKilled 필드 없음).",
+  "message.simcitymod.reset_dragon_fail_error": "§c[SimCity] 초기화 중 오류 발생: %s"
 }

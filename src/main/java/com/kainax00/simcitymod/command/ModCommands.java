@@ -28,11 +28,13 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraft.world.level.Level;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -117,6 +119,9 @@ public class ModCommands {
                     .then(Commands.literal("pregen")
                         .executes(ModCommands::startPregen)
                         .then(Commands.literal("stop").executes(ModCommands::stopPregen))
+                    )
+                    .then(Commands.literal("resetdragon")
+                        .executes(ModCommands::executeResetDragon)
                     )
                 )
 
@@ -207,7 +212,7 @@ public class ModCommands {
                 break;
 
             case "end":
-                if (currentDimension != Level.END && !dimId.contains(SimDimensionType.END.getIdPrefix())) {
+                if (currentDimension != Level.END) {
                     context.getSource().sendFailure(Component.translatable("message.simcitymod.setspawn_end_end_only"));
                     return 0;
                 }
@@ -233,6 +238,38 @@ public class ModCommands {
         ChunkPreGenerator.stopPreGeneration();
         context.getSource().sendSuccess(() -> Component.translatable("message.simcitymod.pregen_stop_requested"), true);
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static int executeResetDragon(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        ServerLevel endLevel = source.getServer().getLevel(Level.END);
+
+        if (endLevel == null) {
+            source.sendFailure(Component.translatable("message.simcitymod.reset_dragon_fail_no_end"));
+            return 0;
+        }
+
+        EndDragonFight dragonFight = endLevel.getDragonFight();
+        if (dragonFight == null) {
+            source.sendFailure(Component.translatable("message.simcitymod.reset_dragon_fail_no_fight"));
+            return 0;
+        }
+
+        try {
+            Field field = EndDragonFight.class.getDeclaredField("dragonKilled");
+            field.setAccessible(true);
+            field.setBoolean(dragonFight, false);
+
+            source.sendSuccess(() -> Component.translatable("message.simcitymod.reset_dragon_success"), true);
+            return Command.SINGLE_SUCCESS;
+
+        } catch (NoSuchFieldException e) {
+            source.sendFailure(Component.translatable("message.simcitymod.reset_dragon_fail_field"));
+            return 0;
+        } catch (Exception e) {
+            source.sendFailure(Component.translatable("message.simcitymod.reset_dragon_fail_error", e.getMessage()));
+            return 0;
+        }
     }
 
     private static int addFriend(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
